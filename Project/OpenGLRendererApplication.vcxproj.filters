@@ -13,13 +13,62 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{7b1ed297-aca5-452b-9c2e-7e0c39c20442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{1623de3e-6a40-4f59-83c7-5f6c0f743842}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shaders">
+      <UniqueIdentifier>{91561e20-cd1c-4caf-931e-07d4979066e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\buffers">
+      <UniqueIdentifier>{9d779573-9fb1-41bb-86da-69462495a109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\buffers">
+      <UniqueIdentifier>{86295112-655f-447c-b9c1-d1ebfade3949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shaders\Shader.cpp">
+      <Filter>Source Files\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glad.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffers\EBO.cpp">
+      <Filter>Source Files\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffers\VAO.cpp">
+      <Filter>Source Files\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffers\VBO.cpp">
+      <Filter>Source Files\buffers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\default.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\shaders\Shader.h">
+      <Filter>Header Files\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="include\buffers\VAO.h">
+      <Filter>Header Files\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\buffers\EBO.h">
+      <Filter>Header Files\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\buffers\VBO.h">
+      <Filter>Header Files\buffers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,15 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
 #include <iostream>
+#include "stb/stb_image.h"
+
+#include "shaders/Shader.h"
+#include "buffers/VBO.h"
+#include "buffers/EBO.h"
+#include "buffers/VAO.h"	
 
 /*
 * Purpose - Callback Function when the Window has been resized with cursor. 
@@ -24,6 +33,20 @@ void processInput(GLFWwindow* window)
 	}
 }
 
+GLfloat vertices[] = {
+	// Positions          // Colors           // Texture Coords
+	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+};
+
+GLuint indices[] =
+{
+	0, 1, 3,
+	1, 2 ,3
+};
+
 // Main Function
 int main()
 {
@@ -38,6 +61,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	// Use the Core profile as that is what is used with GLAD
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
 	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Renderer Application", nullptr, nullptr);
@@ -60,8 +84,48 @@ int main()
 	glViewport(0, 0, 800, 600); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
-	double xpos;
-	double ypos;
+	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
+
+	VAO VAO1;
+	VAO1.bind();
+	VBO VBO1(vertices, sizeof(vertices));
+	EBO EBO1(indices, sizeof(indices));
+	
+	VAO1.linkAttrib(VBO1, 0, 3, (8 * sizeof(float)), (void*)0);
+	VAO1.linkAttrib(VBO1, 1, 3, (8 * sizeof(float)), (void*)(3 * sizeof(float)));
+	VAO1.linkAttrib(VBO1, 2, 2, (8 * sizeof(float)), (void*)(6 * sizeof(float)));
+
+	VAO1.unbind();
+	VBO1.unbind();
+	EBO1.unbind();
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// Setup Texture Params
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	stbi_set_flip_vertically_on_load(true);
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("assets/container.jpg", &width, &height, &nrChannels, 0);
+
+	if (data)
+	{
+		GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "SUCCESS: Successfully loaded texture" << std::endl;
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
 	// Run loop of the application
 	while (!glfwWindowShouldClose(window))
 	{
@@ -72,9 +136,12 @@ int main()
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//glfwGetCursorPos(window, &xpos, &ypos);
-		//if (0 < xpos && xpos < 800 && 0 < ypos && ypos < 600)
-		//	std::cout << "X: " << xpos << "    Y: " << ypos << std::endl;
+		shaderProgram.use();
+		VAO1.bind();
+		
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Use GL_LINE for Wireframe, GL_FILL for filled in
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);
@@ -82,6 +149,13 @@ int main()
 	}
 
 	// Clean up
+	VAO1.clear();
+	VBO1.clear();
+	EBO1.clear();
+	shaderProgram.clear();
+
+	glfwDestroyWindow(window);
 	glfwTerminate();
+	
 	return 0;
 }

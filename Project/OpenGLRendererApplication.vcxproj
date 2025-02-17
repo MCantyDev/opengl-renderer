@@ -19,8 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Buffers\EBO.cpp" />
+    <ClCompile Include="src\Buffers\VAO.cpp" />
+    <ClCompile Include="src\Buffers\VBO.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shaders\Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default.frag" />
+    <None Include="shaders\default.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\buffers\EBO.h" />
+    <ClInclude Include="include\buffers\VAO.h" />
+    <ClInclude Include="include\buffers\VBO.h" />
+    <ClInclude Include="include\shaders\Shader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -75,13 +89,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
