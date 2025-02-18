@@ -37,12 +37,63 @@ void processInput(GLFWwindow* window)
 	}
 }
 
+// Indices took specifically from LearnOpenGL.com
 GLfloat vertices[] = {
-	// Positions          // Texture Coords
-	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,		// Top Right
-	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,		// Bottom Right
-	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,		// Bottom Left
-	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f		// Top Left
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+// Cube Positions to place the cubes at
+glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(5.0f,  7.0f, -17.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
 GLuint indices[] =
@@ -54,13 +105,15 @@ GLuint indices[] =
 // Constants
 int WIDTH = 1200;
 int HEIGHT = 900;
-float speed = 2.0f;
 
 // Main Function
 int main()
 {
-	float lastFrame = 0.0f;
-	float deltaTime = 0.0f;
+	// For the Frame Generation
+	float lastTime = 0.0f;
+	int frameCount = 0;
+	float fps = 0.0f;
+	float speed = 20.0f;
 
 	if (!glfwInit()) // Attempt to init glfw
 	{
@@ -85,6 +138,7 @@ int main()
 		return -1;
 	}
 	glfwMakeContextCurrent(window); // Make the created window the current context...very useful for next line
+	glfwSwapInterval(0); // Deactivate V-SYNC
 	
 	// After making Window current context we can Load GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
@@ -96,94 +150,92 @@ int main()
 	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
+	// Setup the Shaders, both the Vertex and Fragment ones
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
 
-	VAO VAO1;
-	VAO1.bind();
-	VBO VBO1(vertices, sizeof(vertices));
-	EBO EBO1(indices, sizeof(indices));
+	// Buffer and VAO Setup
+	VAO VAO1; // VAO -> Vertex Array Object
+	VAO1.bind(); // Binding the VAO
+	VBO VBO1(vertices, sizeof(vertices)); // Creating a VBO (Vertex Buffer Object) with the Vertices array
 	
-	VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, (5 * sizeof(float)), (void*)0);
+	// Creating the Attribute Pointers to correctly identify data from the VBO in the Shader program
+	VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, (5 * sizeof(float)), (void*)0); 
 	VAO1.linkAttrib(VBO1, 1, 2, GL_FLOAT, (5 * sizeof(float)), (void*)(3 * sizeof(float)));
 
+	// Unbinding the VAO, VBO, and EBO
 	VAO1.unbind();
 	VBO1.unbind();
-	EBO1.unbind();
 
-	Texture texture("assets/container.jpg");
+	// Creating the Textures used within the program
+	Texture texture1("assets/container.jpg");
 	Texture texture2("assets/awesomeface.png");
-	texture.activateTexture(0);
+	texture1.activateTexture(0);
 	texture2.activateTexture(1);
+
+	// Enable Depth Testing for Rendering the correct stuff based on Depth
+	glEnable(GL_DEPTH_TEST);
 
 	// Run loop of the application
 	while (!glfwWindowShouldClose(window))
 	{
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		// Show FPS in title
+		float currTime = glfwGetTime();
+		frameCount++;
+
+		if (currTime - lastTime >= 1.0f)
+		{
+			fps = frameCount;
+			frameCount = 0;
+			lastTime = currTime;
+
+			std::ostringstream oss;
+			oss << "OpenGL Renderer Application - FPS: " << fps; // Build the string
+			glfwSetWindowTitle(window, oss.str().c_str());
+		}
 
 		// Process input
 		processInput(window);
 
 		// Render stuff here
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Starting using the Texture Program and use the proper textures
 		shaderProgram.use();
 		shaderProgram.setInt("texture1", 0);
 		shaderProgram.setInt("texture2", 1);
+
 		VAO1.bind();
 		
-		// First Container
-		// Matrix transformations
-		glm::mat4 identityMatrix(1.0f);  // Identity matrix (with the diag values being 1.0)
-		identityMatrix = glm::translate(identityMatrix, glm::vec3(0.5f, -0.5f, 0.0f)); // Moving the Container to the the Bottom Right
-		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotating the Container in place based on the glfwGetTime()
+		// View Matrix - Tranforms the Camera's positon and orientation (Defines the user's viewpoint)
+		glm::mat4 view = glm::mat4(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		shaderProgram.setMat4("view", view);
 
-		// Drawing the Container
-		shaderProgram.setMat4("transform", identityMatrix);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0); // Drawing the second Container
+		// Projection Matrix - Defines the perspective transformation (How 3D Objects are projected on a 2D space)
+		glm::mat4 projection;
+		projection = glm::perspective(glm::radians(50.0f), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
+		shaderProgram.setMat4("projection", projection);
 
-		// Second Container
-		// Matrix Transformations
-		identityMatrix = glm::mat4(1.0f); // reset it to identity matrix
-		identityMatrix = glm::translate(identityMatrix, glm::vec3(-0.5f, 0.5f, 0.0f)); // Moving the Container to the top left
+		// Placing Containers
+		float angle = glfwGetTime() * speed;
+		for (GLuint i = 0; i < 10; i++)
+		{
+			// Model Matrix - Transforms each cube individually (Position, Rotation, Scale)
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
 
-		float scale = sin(glfwGetTime());
+			float x = (i % 2 == 0) ? 1.0f : -1.0f;
+			float y = (i % 2 == 0) ? 0.3f : -0.3f;
+			float z = (i % 2 == 0) ? 0.5f : -0.5f;
 
-		identityMatrix = glm::scale(identityMatrix, glm::vec3(scale, scale, scale)); // Scaling each axis by the scale amount for a equal scaling in each axis
-		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, -1.0f));
+			model = glm::rotate(model, glm::radians(angle + (20.0f * i)), glm::vec3(x, y, z));
+			shaderProgram.setMat4("model", model);
+			
+			// Drawing the Triangles
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
-		// Drawing the Container
-		shaderProgram.setMat4("transform", identityMatrix);
-		shaderProgram.setInt("texture2", 0);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0); // Drawing the Second Container
-
-		// Third Container
-		// Matrix Transformations
-		identityMatrix = glm::mat4(1.0f);
-		identityMatrix = glm::translate(identityMatrix, glm::vec3(0.5f, 0.5f, 0.0f));
-		identityMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		shaderProgram.setMat4("transform", identityMatrix);
-		
-		// Make Both Textures equal to something that doesnt exist
-		shaderProgram.setInt("texture1", 3);
-		shaderProgram.setInt("texture2", 3);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-
-
-		// Last Container
-		identityMatrix = glm::mat4(1.0f);
-		identityMatrix = glm::translate(identityMatrix, glm::vec3(-0.5f, -0.5f, 0.0f));
-		identityMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-
-		shaderProgram.setMat4("transform", identityMatrix);
-		shaderProgram.setInt("texture1", 0);
-		shaderProgram.setInt("texture2", 1);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-		
 		glBindVertexArray(0);
 
 		// Swap the buffers and Poll+Call events
@@ -194,7 +246,6 @@ int main()
 	// Clean up
 	VAO1.clear();
 	VBO1.clear();
-	EBO1.clear();
 	shaderProgram.clear();
 
 	glfwDestroyWindow(window);
