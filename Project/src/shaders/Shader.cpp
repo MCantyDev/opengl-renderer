@@ -99,72 +99,89 @@ GLuint Shader::createProgram(GLuint vertexShader, GLuint fragmentShader)
 	return programID;
 }
 
+GLuint Shader::getLocation(const std::string& name)
+{
+	GLuint location = glGetUniformLocation(ID, name.c_str());
+
+	if (location == -1)
+	{
+		std::cerr << "Warning: Uniform '" << name << "' does not exist!" << std::endl;
+	}
+
+	return location;
+}
 
 // All overloaded set functions
 // Set Bool Functions - Takes 1 to 4 values
 void Shader::setBool(const std::string& name, bool v)
 {
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)v);
+	glUniform1i(getLocation(name), (int)v);
 }
 void Shader::setBool(const std::string& name, bool v1, bool v2)
 {
-	glUniform2i(glGetUniformLocation(ID, name.c_str()), (int)v1, (int)v2);
+	glUniform2i(getLocation(name), (int)v1, (int)v2);
 }
 void Shader::setBool(const std::string& name, bool v1, bool v2, bool v3)
 {
-	glUniform3i(glGetUniformLocation(ID, name.c_str()), (int)v1, (int)v2, (int)v3);
+	glUniform3i(getLocation(name), (int)v1, (int)v2, (int)v3);
 }
 void Shader::setBool(const std::string& name, bool v1, bool v2, bool v3, bool v4)
 {
-	glUniform4i(glGetUniformLocation(ID, name.c_str()), (int)v1, (int)v2, (int)v3, (int)v4);
+	glUniform4i(getLocation(name), (int)v1, (int)v2, (int)v3, (int)v4);
 }
 
 // Set Integer Functions - Takes 1 to 4 Values
 void Shader::setInt(const std::string& name, int v)
 {
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), v);
+	glUniform1i(getLocation(name), v);
 }
 void Shader::setInt(const std::string& name, int v1, int v2)
 {
-	glUniform2i(glGetUniformLocation(ID, name.c_str()), v1, v2);
+	glUniform2i(getLocation(name), v1, v2);
 }
 void Shader::setInt(const std::string& name, int v1, int v2, int v3)
 {
-	glUniform3i(glGetUniformLocation(ID, name.c_str()), v1, v2, v3);
+	glUniform3i(getLocation(name), v1, v2, v3);
 }
 void Shader::setInt(const std::string& name, int v1, int v2, int v3, int v4)
 {
-	glUniform4i(glGetUniformLocation(ID, name.c_str()), v1, v2, v3, v4);
+	glUniform4i(getLocation(name), v1, v2, v3, v4);
 }
 
 // Set Float Functions - Takes 1 to 4 values
 void Shader::setFloat(const std::string& name, float v)
 {
-	glUniform1f(glGetUniformLocation(ID, name.c_str()), v);
+	glUniform1f(getLocation(name), v);
 }
 void Shader::setFloat(const std::string& name, float v1, float v2)
 {
-	glUniform2f(glGetUniformLocation(ID, name.c_str()), v1, v2);
+	glUniform2f(getLocation(name), v1, v2);
 }
 void Shader::setFloat(const std::string& name, float v1, float v2, float v3)
 {
-	glUniform3f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3);
+	glUniform3f(getLocation(name), v1, v2, v3);
 }
 void Shader::setFloat(const std::string& name, float v1, float v2, float v3, float v4)
 {
-	glUniform4f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3, v4);
+	glUniform4f(getLocation(name), v1, v2, v3, v4);
 }
 
 // Functions which are using GLM Vectors instead of just standard floats
 void Shader::setFloat(const std::string& name, const glm::vec2& value)
 {
-	glUniform2f(glGetUniformLocation(ID, name.c_str()), value.x, value.y);
+	glUniform2f(getLocation(name), value.x, value.y);
 }
 void Shader::setFloat(const std::string& name, const glm::vec3& value)
 {
-	glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
+	glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
 void Shader::setFloat(const std::string& name, const glm::vec4& value)
 {
-	glUniform4f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z, value.w);
+	glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
+}
+
+// Function which are using GLM Matrices instead of vectors
+void Shader::setMat4(const std::string& name, const glm::mat4& mat)
+{
+	glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
 }

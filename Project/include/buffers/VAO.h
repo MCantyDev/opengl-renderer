@@ -23,11 +23,12 @@ public:
 	* @brief Link an Attribute Pointer to the VAO
 	* @param VBO& VBO - The VBO which you want to link
 	* @param GLuint layout - The layout location to bind the attribute
-	* @param GLint size - Number of values per cluster (e.g., 3 for a position with x, y, z)
+	* @param GLint numComponents - Number of values per cluster (e.g., 3 for a position with x, y, z)
+	* @param GLenum type - Type of value (e.g. GL_FLOAT)
 	* @param GLsizei stride - Distance between consecutive attributes (in bytes)
-	* @param const void* pointer - Offset of the first component of the attribute
+	* @param const void* offset - Offset of the first component of the attribute
 	*/
-	void linkAttrib(VBO& VBO, GLuint layout, GLint size, GLsizei stride, const void* pointer);
+	void linkAttrib(VBO& VBO, GLuint layout, GLint numComponents, GLenum type, GLsizei stride, const void* offset);
 
 	/*
 	* Bind the VAO to be used within the program

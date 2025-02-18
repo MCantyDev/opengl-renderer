@@ -25,6 +25,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
+    <ClCompile Include="src\textures\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
@@ -35,6 +36,7 @@
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
     <ClInclude Include="include\shaders\Shader.h" />
+    <ClInclude Include="include\textures\Texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

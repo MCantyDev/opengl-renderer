@@ -28,6 +28,12 @@
     <Filter Include="Source Files\buffers">
       <UniqueIdentifier>{86295112-655f-447c-b9c1-d1ebfade3949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\textures">
+      <UniqueIdentifier>{49167d2d-0dc4-4b0c-b275-5d979d6f7878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\textures">
+      <UniqueIdentifier>{a2aed4fd-1e55-4543-8a07-1577589c5b56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -47,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="src\Buffers\VBO.cpp">
       <Filter>Source Files\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textures\Texture.cpp">
+      <Filter>Source Files\textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="include\buffers\VBO.h">
       <Filter>Header Files\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\textures\Texture.h">
+      <Filter>Header Files\textures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

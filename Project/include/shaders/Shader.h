@@ -2,7 +2,11 @@
 #define SHADER_H
 
 #include "glad/glad.h"
+
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -36,6 +40,9 @@ public:
 	void setFloat(const std::string& name, const glm::vec3& value);
 	void setFloat(const std::string& name, const glm::vec4& value);
 	
+	// Set Matrices in Uniform
+	void setMat4(const std::string& name, const glm::mat4& mat);
+	
 	GLuint getID();
 
 private:
@@ -44,6 +51,7 @@ private:
 	std::string getFileContents(const char* filename);
 	GLuint compileShader(const char* shaderCode, GLenum shaderType);
 	GLuint createProgram(GLuint vertexShader, GLuint fragmentShader);
+	GLuint getLocation(const std::string& name);
 };
 
 #endif // SHADER_H

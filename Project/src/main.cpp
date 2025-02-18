@@ -2,14 +2,18 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
-#include "stb/stb_image.h"
 
 #include "shaders/Shader.h"
 #include "buffers/VBO.h"
 #include "buffers/EBO.h"
 #include "buffers/VAO.h"	
+#include "textures/Texture.h"
 
 /*
 * Purpose - Callback Function when the Window has been resized with cursor. 
@@ -34,22 +38,30 @@ void processInput(GLFWwindow* window)
 }
 
 GLfloat vertices[] = {
-	// Positions          // Colors           // Texture Coords
-	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+	// Positions          // Texture Coords
+	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,		// Top Right
+	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,		// Bottom Right
+	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,		// Bottom Left
+	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f		// Top Left
 };
 
 GLuint indices[] =
 {
 	0, 1, 3,
-	1, 2 ,3
+	1, 2 ,3,
 };
+
+// Constants
+int WIDTH = 1200;
+int HEIGHT = 900;
+float speed = 2.0f;
 
 // Main Function
 int main()
 {
+	float lastFrame = 0.0f;
+	float deltaTime = 0.0f;
+
 	if (!glfwInit()) // Attempt to init glfw
 	{
 		std::cout << "Failed to Initialise GLFW" << std::endl;
@@ -64,7 +76,7 @@ int main()
 
 
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Renderer Application", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL Renderer Application", nullptr, nullptr);
 
 	if (window == nullptr) // Check if Window was successfully created
 	{
@@ -81,7 +93,7 @@ int main()
 		return -1;
 	}
 	
-	glViewport(0, 0, 800, 600); // Set the default viewport
+	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
@@ -91,44 +103,25 @@ int main()
 	VBO VBO1(vertices, sizeof(vertices));
 	EBO EBO1(indices, sizeof(indices));
 	
-	VAO1.linkAttrib(VBO1, 0, 3, (8 * sizeof(float)), (void*)0);
-	VAO1.linkAttrib(VBO1, 1, 3, (8 * sizeof(float)), (void*)(3 * sizeof(float)));
-	VAO1.linkAttrib(VBO1, 2, 2, (8 * sizeof(float)), (void*)(6 * sizeof(float)));
+	VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, (5 * sizeof(float)), (void*)0);
+	VAO1.linkAttrib(VBO1, 1, 2, GL_FLOAT, (5 * sizeof(float)), (void*)(3 * sizeof(float)));
 
 	VAO1.unbind();
 	VBO1.unbind();
 	EBO1.unbind();
 
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// Setup Texture Params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	stbi_set_flip_vertically_on_load(true);
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("assets/container.jpg", &width, &height, &nrChannels, 0);
-
-	if (data)
-	{
-		GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "SUCCESS: Successfully loaded texture" << std::endl;
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
+	Texture texture("assets/container.jpg");
+	Texture texture2("assets/awesomeface.png");
+	texture.activateTexture(0);
+	texture2.activateTexture(1);
 
 	// Run loop of the application
 	while (!glfwWindowShouldClose(window))
 	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// Process input
 		processInput(window);
 
@@ -137,10 +130,60 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shaderProgram.use();
+		shaderProgram.setInt("texture1", 0);
+		shaderProgram.setInt("texture2", 1);
 		VAO1.bind();
 		
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Use GL_LINE for Wireframe, GL_FILL for filled in
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// First Container
+		// Matrix transformations
+		glm::mat4 identityMatrix(1.0f);  // Identity matrix (with the diag values being 1.0)
+		identityMatrix = glm::translate(identityMatrix, glm::vec3(0.5f, -0.5f, 0.0f)); // Moving the Container to the the Bottom Right
+		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotating the Container in place based on the glfwGetTime()
+
+		// Drawing the Container
+		shaderProgram.setMat4("transform", identityMatrix);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0); // Drawing the second Container
+
+		// Second Container
+		// Matrix Transformations
+		identityMatrix = glm::mat4(1.0f); // reset it to identity matrix
+		identityMatrix = glm::translate(identityMatrix, glm::vec3(-0.5f, 0.5f, 0.0f)); // Moving the Container to the top left
+
+		float scale = sin(glfwGetTime());
+
+		identityMatrix = glm::scale(identityMatrix, glm::vec3(scale, scale, scale)); // Scaling each axis by the scale amount for a equal scaling in each axis
+		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, -1.0f));
+
+		// Drawing the Container
+		shaderProgram.setMat4("transform", identityMatrix);
+		shaderProgram.setInt("texture2", 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0); // Drawing the Second Container
+
+		// Third Container
+		// Matrix Transformations
+		identityMatrix = glm::mat4(1.0f);
+		identityMatrix = glm::translate(identityMatrix, glm::vec3(0.5f, 0.5f, 0.0f));
+		identityMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+		identityMatrix = glm::rotate(identityMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		shaderProgram.setMat4("transform", identityMatrix);
+		
+		// Make Both Textures equal to something that doesnt exist
+		shaderProgram.setInt("texture1", 3);
+		shaderProgram.setInt("texture2", 3);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+
+
+		// Last Container
+		identityMatrix = glm::mat4(1.0f);
+		identityMatrix = glm::translate(identityMatrix, glm::vec3(-0.5f, -0.5f, 0.0f));
+		identityMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+
+		shaderProgram.setMat4("transform", identityMatrix);
+		shaderProgram.setInt("texture1", 0);
+		shaderProgram.setInt("texture2", 1);
+		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		
 		glBindVertexArray(0);
 
 		// Swap the buffers and Poll+Call events
