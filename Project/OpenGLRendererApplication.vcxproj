@@ -19,11 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mesh\Cube.cpp" />
+    <ClCompile Include="src\mesh\Sphere.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\textures\Texture.cpp" />
   </ItemGroup>
@@ -32,9 +35,12 @@
     <None Include="shaders\default.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
+    <ClInclude Include="include\mesh\Cube.h" />
+    <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />
     <ClInclude Include="include\textures\Texture.h" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "textures/Texture.h"
 
 // Constructor that loads the texture from the file
-Texture::Texture(const std::string& filePath) : path(filePath)
+Texture::Texture(const std::string& filePath, bool flipped) : path(filePath)
 {
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
@@ -9,7 +9,7 @@ Texture::Texture(const std::string& filePath) : path(filePath)
     // Set texture parameters
     setTextureParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
-    stbi_set_flip_vertically_on_load(true);  // Flip texture on load
+    stbi_set_flip_vertically_on_load(flipped);  // Flip texture on load
     int width, height, nrChannels;
     unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
 

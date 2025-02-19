@@ -10,7 +10,7 @@ class Texture
 {
 public:
     // Constructor that loads a texture
-    Texture(const std::string& filePath);
+    Texture(const std::string& filePath, bool flipped = true);
     ~Texture();
 
     void bind() const;

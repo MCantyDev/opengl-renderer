@@ -34,6 +34,21 @@
     <Filter Include="Header Files\textures">
       <UniqueIdentifier>{a2aed4fd-1e55-4543-8a07-1577589c5b56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\camera">
+      <UniqueIdentifier>{0b49f89f-3c46-40ab-ac3a-3f855f85c5fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\camera">
+      <UniqueIdentifier>{bd46b975-7af3-4e8f-a1d4-fd3c5785c4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\meshes">
+      <UniqueIdentifier>{759f50ee-716e-4bfb-9b7f-5065d2fe3b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\meshes">
+      <UniqueIdentifier>{9f74c1a4-2eab-4653-a161-936af900d499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\default">
+      <UniqueIdentifier>{113a7170-4fd9-4eb1-9d62-e4ad0717c48a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -57,13 +72,22 @@
     <ClCompile Include="src\textures\Texture.cpp">
       <Filter>Source Files\textures</Filter>
     </ClCompile>
+    <ClCompile Include="src\camera\Camera.cpp">
+      <Filter>Source Files\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Cube.cpp">
+      <Filter>Source Files\meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Sphere.cpp">
+      <Filter>Source Files\meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\default.vert">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="shaders\default.frag">
-      <Filter>Resource Files\shaders</Filter>
+      <Filter>Resource Files\shaders\default</Filter>
+    </None>
+    <None Include="shaders\default.vert">
+      <Filter>Resource Files\shaders\default</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +105,15 @@
     </ClInclude>
     <ClInclude Include="include\textures\Texture.h">
       <Filter>Header Files\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\camera\Camera.h">
+      <Filter>Header Files\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Cube.h">
+      <Filter>Header Files\meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Sphere.h">
+      <Filter>Header Files\meshes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

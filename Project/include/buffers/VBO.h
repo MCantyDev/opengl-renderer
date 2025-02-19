@@ -7,7 +7,9 @@ class VBO
 {
 public:
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
+	VBO() = default;
 	VBO(GLfloat* vertices, GLsizeiptr size);
+	~VBO() = default;
 
 	// Binds the VBO
 	void bind();
