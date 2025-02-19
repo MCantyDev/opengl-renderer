@@ -84,6 +84,12 @@
     <ClCompile Include="src\mesh\Sphere.cpp">
       <Filter>Source Files\meshes</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\Mesh.cpp">
+      <Filter>Source Files\meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -122,6 +128,9 @@
       <Filter>Header Files\meshes</Filter>
     </ClInclude>
     <ClInclude Include="include\mesh\Sphere.h">
+      <Filter>Header Files\meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Mesh.h">
       <Filter>Header Files\meshes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,7 +2,7 @@
 
 Sphere::Sphere(float r, int vd, int hd)
 {
-	sphereVAO.bind();
+	meshVAO.bind();
 	
 	std::vector<float> vertices = generateVertices(r, vd, hd);
 	indices = generateIndices(vd, hd);
@@ -10,24 +10,11 @@ Sphere::Sphere(float r, int vd, int hd)
 	sphereVBO = VBO(vertices.data(), vertices.size() * sizeof(float));
 	sphereEBO = EBO(indices.data(), indices.size() * sizeof(GLuint));
 
-	sphereVAO.linkAttrib(sphereVBO, 0, 3, GL_FLOAT, (8 * sizeof(float)), (void*)0);
-	sphereVAO.linkAttrib(sphereVBO, 1, 3, GL_FLOAT, (8 * sizeof(float)), (void*)(3 * sizeof(float)));
-	sphereVAO.linkAttrib(sphereVBO, 2, 2, GL_FLOAT, (8 * sizeof(float)), (void*)(6 * sizeof(float)));
-}
+	linkToVAO(sphereVBO);
 
-void Sphere::setPosition(glm::vec3 coordinates)
-{
-	modelMatrix = glm::translate(glm::mat4(1.0f), coordinates);
-}
-
-void Sphere::setRotation(float angle, glm::vec3 axis)
-{
-	modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), axis);
-}
-
-void Sphere::setScale(glm::vec3 scaler)
-{
-	modelMatrix = glm::scale(modelMatrix, scaler);
+	meshVAO.unbind();
+	sphereVBO.unbind();
+	sphereEBO.unbind();
 }
 
 void Sphere::draw(Shader& s)
@@ -35,10 +22,10 @@ void Sphere::draw(Shader& s)
 	s.use();
 	s.setMat4("model", modelMatrix);
 
-	sphereVAO.bind();
+	meshVAO.bind();
 	sphereEBO.bind();
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	sphereVAO.unbind();
+	meshVAO.unbind();
 	sphereEBO.unbind();
 }
 
@@ -59,6 +46,7 @@ std::vector<float> Sphere::generateVertices(float r, int vd, int hd)
 			float y = r * cos(phi);
 			float z = r * sin(phi) * sin(theta);
 
+			// Simply Normalise the Values for X, Y, Z
 			glm::vec3 normalised = glm::normalize(glm::vec3(x, y, z));
 
 			float u = theta / (2 * M_PI);

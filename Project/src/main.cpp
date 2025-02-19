@@ -1,17 +1,14 @@
-﻿#define STB_IMAGE_IMPLEMENTATION
-
-#include "shaders/Shader.h"
-
-#include "buffers/VBO.h"
-#include "buffers/VAO.h"	
-
-#include "textures/Texture.h"
-
-#include "camera/Camera.h"
-
+﻿// Standard Lib Imports
 #include <random>
 #include <vector>
 #include <cmath>
+
+// Custom Components
+#include "shaders/Shader.h"
+#include "buffers/VBO.h"
+#include "buffers/VAO.h"	
+#include "textures/Texture.h"
+#include "camera/Camera.h"
 
 // Meshes
 #include "mesh/Cube.h"
@@ -51,6 +48,14 @@ float lastFrame = 0.0f;
 float fpsTimer = 0.0f;
 float fps = 0.0f;
 int frameCount = 0;
+
+// Lighting
+// ------------
+glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 lightPos = glm::vec3(2.0f, 2.0f, 1.0f);
+glm::vec3 lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 objectColour = glm::vec3(1.0f, 0.5f, 0.5f);
+
 
 // Main Function
 int main()
@@ -98,10 +103,8 @@ int main()
 	// Creating the Textures used within the program
 	Texture texture1("assets/container.jpg");
 	Texture texture2("assets/awesomeface.png");
-	Texture texture3("assets/earth.jpg", true);
 	texture1.activateTexture(0);
 	texture2.activateTexture(1);
-	texture3.activateTexture(2);
 
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
 	glEnable(GL_DEPTH_TEST);
@@ -158,26 +161,23 @@ while (!glfwWindowShouldClose(window))
 	glm::mat4 view = camera->getView();
 	defaultShader.setMat4("view", view);
 
-	glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	defaultShader.setFloat("colour", objectColour);
+	defaultShader.setFloat("viewPos", camera->getPos());
+	defaultShader.setFloat("lightColour", lightColour);
+	defaultShader.setFloat("lightPos", lightPos);
+
 	cube.setPosition(pos);
 	cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.8f, 0.5f, 0.2f));
-	cube.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
-
-	defaultShader.setFloat("colour", glm::vec3(1.0f, 0.5f, 0.5f));
-	defaultShader.setFloat("viewPos", camera->getPos());
-	defaultShader.setFloat("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
-	defaultShader.setFloat("lightPos", glm::vec3(2.0f, 2.0f, 1.0f));
-
 	cube.draw(defaultShader);
 
 	lightingShader.use();
 	lightingShader.setMat4("projection", projection);
 	lightingShader.setMat4("view", view);
+	lightingShader.setFloat("lightColour", lightColour);
 
-	sphere.setPosition(glm::vec3(2.0f, 2.0f, 1.0f));
 	sphere.setScale(glm::vec3(1.5f, 1.5f, 1.0f));
-
-	lightingShader.setFloat("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
+	sphere.setPosition(lightPos);
 	sphere.draw(lightingShader);
 	
 	// Swap the buffers and Poll+Call events

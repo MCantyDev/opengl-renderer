@@ -5,6 +5,8 @@
 #define M_PI 3.14159265358979323846 // Used to Form the SPHERE
 #endif
 
+#include "mesh/Mesh.h"
+
 #include "buffers/VAO.h"
 #include "buffers/VBO.h"
 #include "buffers/EBO.h"
@@ -53,23 +55,17 @@ For example a (1.0f, 50, 50) sphere would have 2601 vertices (Formula is (sector
 */
 
 /* @class Sphere */
-class Sphere
+class Sphere : public Mesh
 {
 public:
 	Sphere(float r, int vd, int hd);
 
-	void setPosition(glm::vec3 coordinates);
-	void setRotation(float angle, glm::vec3 axis);
-	void setScale(glm::vec3 scaler);
-
-	void draw(Shader& s);
+	virtual void draw(Shader& s) override;
 
 private:
-	VAO sphereVAO;
 	VBO sphereVBO;
 	EBO sphereEBO;
 
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
 	std::vector<GLuint> indices;
 
 	std::vector<float> generateVertices(float r, int vd, int hd);
