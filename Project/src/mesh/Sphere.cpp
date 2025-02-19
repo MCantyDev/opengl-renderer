@@ -10,18 +10,24 @@ Sphere::Sphere(float r, int vd, int hd)
 	sphereVBO = VBO(vertices.data(), vertices.size() * sizeof(float));
 	sphereEBO = EBO(indices.data(), indices.size() * sizeof(GLuint));
 
-	sphereVAO.linkAttrib(sphereVBO, 0, 3, GL_FLOAT, (5 * sizeof(float)), (void*)0);
-	sphereVAO.linkAttrib(sphereVBO, 1, 2, GL_FLOAT, (5 * sizeof(float)), (void*)(3 * sizeof(float)));
+	sphereVAO.linkAttrib(sphereVBO, 0, 3, GL_FLOAT, (8 * sizeof(float)), (void*)0);
+	sphereVAO.linkAttrib(sphereVBO, 1, 3, GL_FLOAT, (8 * sizeof(float)), (void*)(3 * sizeof(float)));
+	sphereVAO.linkAttrib(sphereVBO, 2, 2, GL_FLOAT, (8 * sizeof(float)), (void*)(6 * sizeof(float)));
 }
 
-void Sphere::setPosition(float x, float y, float z)
+void Sphere::setPosition(glm::vec3 coordinates)
 {
-	modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+	modelMatrix = glm::translate(glm::mat4(1.0f), coordinates);
 }
 
 void Sphere::setRotation(float angle, glm::vec3 axis)
 {
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), axis);
+}
+
+void Sphere::setScale(glm::vec3 scaler)
+{
+	modelMatrix = glm::scale(modelMatrix, scaler);
 }
 
 void Sphere::draw(Shader& s)
@@ -53,12 +59,17 @@ std::vector<float> Sphere::generateVertices(float r, int vd, int hd)
 			float y = r * cos(phi);
 			float z = r * sin(phi) * sin(theta);
 
+			glm::vec3 normalised = glm::normalize(glm::vec3(x, y, z));
+
 			float u = theta / (2 * M_PI);
 			float v = phi / M_PI;
 
 			vertices.push_back(x);
 			vertices.push_back(y);
 			vertices.push_back(z);
+			vertices.push_back(normalised.x);
+			vertices.push_back(normalised.y);
+			vertices.push_back(normalised.z);
 			vertices.push_back(u);
 			vertices.push_back(v);
 		}

@@ -3,23 +3,29 @@
 Cube::Cube()
 {
 	cubeVAO.bind();
-	cubeVBO = VBO(vertices, sizeof(vertices));
+	cubeVBO = VBO(vertices.data(), (vertices.size() * sizeof(GLfloat)));
 
-	cubeVAO.linkAttrib(cubeVBO, 0, 3, GL_FLOAT, (5 * sizeof(float)), (void*)0);
-	cubeVAO.linkAttrib(cubeVBO, 1, 2, GL_FLOAT, (5 * sizeof(float)), (void*)(3 * sizeof(float)));
+	cubeVAO.linkAttrib(cubeVBO, 0, 3, GL_FLOAT, (8 * sizeof(float)), (void*)0);
+	cubeVAO.linkAttrib(cubeVBO, 1, 3, GL_FLOAT, (8 * sizeof(float)), (void*)(3 * sizeof(float)));
+	cubeVAO.linkAttrib(cubeVBO, 2, 2, GL_FLOAT, (8 * sizeof(float)), (void*)(6 * sizeof(float)));
 
 	cubeVAO.unbind();
 	cubeVBO.unbind();
 }
 
-void Cube::setPosition(float x, float y, float z)
+void Cube::setPosition(glm::vec3 coordinates)
 {
-	modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+	modelMatrix = glm::translate(glm::mat4(1.0f), coordinates);
 }
 
 void Cube::setRotation(float angle, glm::vec3 axis)
 {
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), axis);
+}
+
+void Cube::setScale(glm::vec3 scaler)
+{
+	modelMatrix = glm::scale(modelMatrix, scaler);
 }
 
 void Cube::draw(Shader& shader)

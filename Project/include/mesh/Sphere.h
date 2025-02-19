@@ -58,8 +58,10 @@ class Sphere
 public:
 	Sphere(float r, int vd, int hd);
 
-	void setPosition(float x, float y, float z);
+	void setPosition(glm::vec3 coordinates);
 	void setRotation(float angle, glm::vec3 axis);
+	void setScale(glm::vec3 scaler);
+
 	void draw(Shader& s);
 
 private:

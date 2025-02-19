@@ -93,6 +93,7 @@ int main()
 
 	// Setup the Shaders, both the Vertex and Fragment ones
 	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
+	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
 
 	// Creating the Textures used within the program
 	Texture texture1("assets/container.jpg");
@@ -158,14 +159,26 @@ while (!glfwWindowShouldClose(window))
 	defaultShader.setMat4("view", view);
 
 	glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-	cube.setPosition(pos.x, pos.y, pos.z);
+	cube.setPosition(pos);
 	cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.8f, 0.5f, 0.2f));
+	cube.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
+
 	defaultShader.setFloat("colour", glm::vec3(1.0f, 0.5f, 0.5f));
+	defaultShader.setFloat("viewPos", camera->getPos());
+	defaultShader.setFloat("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
+	defaultShader.setFloat("lightPos", glm::vec3(2.0f, 2.0f, 1.0f));
+
 	cube.draw(defaultShader);
 
-	sphere.setPosition(2.0f, 2.0f, 1.0f);
-	defaultShader.setFloat("colour", glm::vec3(0.4f, 0.6f, 0.4f));
-	sphere.draw(defaultShader);
+	lightingShader.use();
+	lightingShader.setMat4("projection", projection);
+	lightingShader.setMat4("view", view);
+
+	sphere.setPosition(glm::vec3(2.0f, 2.0f, 1.0f));
+	sphere.setScale(glm::vec3(1.5f, 1.5f, 1.0f));
+
+	lightingShader.setFloat("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
+	sphere.draw(lightingShader);
 	
 	// Swap the buffers and Poll+Call events
 	glfwSwapBuffers(window);

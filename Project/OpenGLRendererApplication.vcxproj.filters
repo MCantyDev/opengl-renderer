@@ -49,6 +49,9 @@
     <Filter Include="Resource Files\shaders\default">
       <UniqueIdentifier>{113a7170-4fd9-4eb1-9d62-e4ad0717c48a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\lighting">
+      <UniqueIdentifier>{c4347861-48a6-4bf4-a1f5-026ceb58efe1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -88,6 +91,12 @@
     </None>
     <None Include="shaders\default.vert">
       <Filter>Resource Files\shaders\default</Filter>
+    </None>
+    <None Include="shaders\lighting.frag">
+      <Filter>Resource Files\shaders\lighting</Filter>
+    </None>
+    <None Include="shaders\lighting.vert">
+      <Filter>Resource Files\shaders\lighting</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
