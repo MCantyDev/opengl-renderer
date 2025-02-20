@@ -2,19 +2,19 @@
 
 Sphere::Sphere(float r, int vd, int hd)
 {
-	meshVAO.bind();
+	vao.bind();
 	
 	std::vector<float> vertices = generateVertices(r, vd, hd);
 	indices = generateIndices(vd, hd);
 
-	sphereVBO = VBO(vertices.data(), vertices.size() * sizeof(float));
-	sphereEBO = EBO(indices.data(), indices.size() * sizeof(GLuint));
+	vbo = VBO(vertices.data(), vertices.size() * sizeof(float));
+	ebo = EBO(indices.data(), indices.size() * sizeof(GLuint));
 
-	linkToVAO(sphereVBO);
+	linkToVAO(vbo);
 
-	meshVAO.unbind();
-	sphereVBO.unbind();
-	sphereEBO.unbind();
+	vao.unbind();
+	vbo.unbind();
+	ebo.unbind();
 }
 
 void Sphere::draw(Shader& s)
@@ -22,11 +22,11 @@ void Sphere::draw(Shader& s)
 	s.use();
 	s.setMat4("model", modelMatrix);
 
-	meshVAO.bind();
-	sphereEBO.bind();
+	vao.bind();
+	ebo.bind();
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	meshVAO.unbind();
-	sphereEBO.unbind();
+	vao.unbind();
+	ebo.unbind();
 }
 
 // How the Sphere is being created programmatically

@@ -84,7 +84,7 @@
     <ClCompile Include="src\mesh\Sphere.cpp">
       <Filter>Source Files\meshes</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\Mesh.cpp">
+    <ClCompile Include="src\mesh\Primitive.cpp">
       <Filter>Source Files\meshes</Filter>
     </ClCompile>
     <ClCompile Include="src\stb_image.cpp">
@@ -130,7 +130,7 @@
     <ClInclude Include="include\mesh\Sphere.h">
       <Filter>Header Files\meshes</Filter>
     </ClInclude>
-    <ClInclude Include="include\mesh\Mesh.h">
+    <ClInclude Include="include\mesh\Primitive.h">
       <Filter>Header Files\meshes</Filter>
     </ClInclude>
   </ItemGroup>

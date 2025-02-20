@@ -5,7 +5,7 @@
 #define M_PI 3.14159265358979323846 // Used to Form the SPHERE
 #endif
 
-#include "mesh/Mesh.h"
+#include "mesh/Primitive.h"
 
 #include "buffers/VAO.h"
 #include "buffers/VBO.h"
@@ -55,7 +55,7 @@ For example a (1.0f, 50, 50) sphere would have 2601 vertices (Formula is (sector
 */
 
 /* @class Sphere */
-class Sphere : public Mesh
+class Sphere : public Primitive
 {
 public:
 	Sphere(float r, int vd, int hd);
@@ -63,8 +63,8 @@ public:
 	virtual void draw(Shader& s) override;
 
 private:
-	VBO sphereVBO;
-	EBO sphereEBO;
+	VBO vbo;
+	EBO ebo;
 
 	std::vector<GLuint> indices;
 

@@ -26,7 +26,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mesh\Cube.cpp" />
-    <ClCompile Include="src\mesh\Mesh.cpp" />
+    <ClCompile Include="src\mesh\Primitive.cpp" />
     <ClCompile Include="src\mesh\Sphere.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -43,7 +43,7 @@
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
-    <ClInclude Include="include\mesh\Mesh.h" />
+    <ClInclude Include="include\mesh\Primitive.h" />
     <ClInclude Include="include\mesh\Cube.h" />
     <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />

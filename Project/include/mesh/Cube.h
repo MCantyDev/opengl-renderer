@@ -1,7 +1,7 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include "mesh/Mesh.h"
+#include "mesh/Primitive.h"
 
 #include "shaders/Shader.h"
 #include "buffers/VAO.h"
@@ -9,7 +9,7 @@
 
 #include <vector>
 
-class Cube : public Mesh
+class Cube : public Primitive
 {
 public:
 	Cube();
@@ -17,7 +17,7 @@ public:
 	virtual void draw(Shader& shader) override;
 
 private:
-	VBO cubeVBO;
+	VBO vbo;
 	
 	// Standard Vertices for the 
     std::vector<GLfloat> vertices = {

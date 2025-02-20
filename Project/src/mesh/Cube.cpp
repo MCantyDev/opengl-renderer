@@ -2,13 +2,13 @@
 
 Cube::Cube()
 {
-	meshVAO.bind();
-	cubeVBO = VBO(vertices.data(), (vertices.size() * sizeof(GLfloat)));
+	vao.bind();
+	vbo = VBO(vertices.data(), (vertices.size() * sizeof(GLfloat)));
 
-	linkToVAO(cubeVBO);
+	linkToVAO(vbo);
 
-	meshVAO.unbind();
-	cubeVBO.unbind();
+	vao.unbind();
+	vbo.unbind();
 }
 
 void Cube::draw(Shader& shader)
@@ -16,7 +16,7 @@ void Cube::draw(Shader& shader)
 	shader.use();
 	shader.setMat4("model", modelMatrix);
 
-	meshVAO.bind();
+	vao.bind();
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	meshVAO.unbind();
+	vao.unbind();
 }
