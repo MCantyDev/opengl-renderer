@@ -7,10 +7,42 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "textures/Texture.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+struct BaseMaterial
+{
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
+	BaseMaterial() = default;
+	BaseMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+};
+
+struct Material
+{
+	BaseMaterial base;
+	Texture diffuseTexture;
+	Texture specularTexture;
+	float shininess;
+	bool useTextures;
+	
+	Material(const BaseMaterial& base, float shininess);
+	Material(const Texture& diffuse, const Texture& specular, float shininess);
+};
+
+struct Light
+{
+	glm::vec3 position; 
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
 
 class Shader
 {
@@ -40,8 +72,12 @@ public:
 	void setFloat(const std::string& name, const glm::vec3& value);
 	void setFloat(const std::string& name, const glm::vec4& value);
 	
-	// Set Matrices in Uniform
 	void setMat4(const std::string& name, const glm::mat4& mat);
+	
+	// Overloaded as sometimes i may not have a texture
+	void setMaterial(const Material& material);
+
+	void setLight(const Light& light);
 	
 	GLuint getID();
 

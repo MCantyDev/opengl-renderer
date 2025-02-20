@@ -10,17 +10,18 @@ class Texture
 {
 public:
     // Constructor that loads a texture
+    Texture() = default;
     Texture(const std::string& filePath, bool flipped = true);
     ~Texture();
 
     void bind() const;
-    void activateTexture(GLuint textureUnit);
+    void activateTexture(GLuint textureUnit) const;
 
     void setTextureParams(GLenum wrapS, GLenum wrapT, GLenum minFilter, GLenum magFilter);
 
-    GLuint getID();
+    GLuint getID() const;
 private:
-    GLuint ID;
+    GLuint ID = 0;
     std::string path;
 };
 

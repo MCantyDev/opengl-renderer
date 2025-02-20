@@ -1,5 +1,26 @@
 #include "shaders/Shader.h"
 
+// Custom Constructor for BaseMaterial
+BaseMaterial::BaseMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+	: ambient(ambient), diffuse(diffuse), specular(specular)
+{
+
+}
+
+// Custom Constructors for Material
+Material::Material(const BaseMaterial& base, float shininess)
+	: base(base), useTextures(false), shininess(shininess)
+{
+
+}
+
+Material::Material(const Texture& diffuse, const Texture& specular, float shininess)
+	: base(), diffuseTexture(diffuse), specularTexture(specular), useTextures(true)
+{
+
+}
+
+
 Shader::Shader(const char* vertexFile, const char* fragmentFile)
 {
 	std::string vertexCode = getFileContents(vertexFile);
@@ -184,4 +205,36 @@ void Shader::setFloat(const std::string& name, const glm::vec4& value)
 void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 {
 	glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+// Simple Function to change the Material of the Object
+void Shader::setMaterial(const Material& material)
+{
+	if (!material.useTextures)
+	{
+		// If no textures was provided to use material
+		setBool("useTexture", false);
+		setFloat("material.base.ambient", material.base.ambient);
+		setFloat("material.base.diffuse", material.base.diffuse);
+		setFloat("material.base.specular", material.base.specular);
+		setFloat("material.shininess", material.shininess);
+	}
+	else
+	{
+		setBool("useTexture", true);
+		material.diffuseTexture.activateTexture(0);
+		material.specularTexture.activateTexture(1);
+		setFloat("material.shininess", material.shininess);
+
+		setInt("material.diffuseTexture", 0);
+		setInt("material.specularTexture", 1);
+	}
+}
+
+void Shader::setLight(const Light& light)
+{
+	setFloat("light.position", light.position);
+	setFloat("light.ambient", light.ambient);
+	setFloat("light.diffuse", light.diffuse);
+	setFloat("light.specular", light.specular);
 }

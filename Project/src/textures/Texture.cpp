@@ -4,10 +4,6 @@
 Texture::Texture(const std::string& filePath, bool flipped) : path(filePath)
 {
     glGenTextures(1, &ID);
-    glBindTexture(GL_TEXTURE_2D, ID);
-
-    // Set texture parameters
-    setTextureParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     stbi_set_flip_vertically_on_load(flipped);  // Flip texture on load
     int width, height, nrChannels;
@@ -15,9 +11,19 @@ Texture::Texture(const std::string& filePath, bool flipped) : path(filePath)
 
     if (data)
     {
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+        GLenum format = GL_RGBA; // Make it GL_RGBA by default 
+        if (nrChannels == 1)
+            format = GL_RED;
+        if (nrChannels == 3)
+            format = GL_RGB;
+
+        glBindTexture(GL_TEXTURE_2D, ID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Setup the Params
+        setTextureParams(GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+
         std::cout << "Setup: Successfully loaded texture: " << filePath << std::endl;
     }
     else
@@ -33,7 +39,7 @@ Texture::~Texture()
     glDeleteTextures(1, &ID);
 }
 
-GLuint Texture::getID()
+GLuint Texture::getID() const
 {
     return ID;
 }
@@ -54,7 +60,7 @@ void Texture::setTextureParams(GLenum wrapS, GLenum wrapT, GLenum minFilter, GLe
 }
 
 // Activates the texture (binding it to a texture unit)
-void Texture::activateTexture(GLuint textureUnit)
+void Texture::activateTexture(GLuint textureUnit) const
 {
     glActiveTexture(GL_TEXTURE0 + textureUnit);  // Activate the texture unit (e.g., GL_TEXTURE0, GL_TEXTURE1, etc.)
     bind();  // Bind the texture to the selected unit

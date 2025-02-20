@@ -30,24 +30,24 @@ void Sphere::draw(Shader& s)
 }
 
 // How the Sphere is being created programmatically
-std::vector<float> Sphere::generateVertices(float r, int vd, int hd)
+std::vector<float> Sphere::generateVertices(float r, int vd, int hd) // 0.3, 10, 10
 {
 	std::vector<float> vertices;
 
-	for (int i = 0; i <= vd; i++)
+	for (int i = 0; i <= vd; i++) // until i = 10 (10 times)
 	{
-		for (int j = 0; j <= hd; j++)
+		for (int j = 0; j <= hd; j++) // until j = 10 (10 times)  (10 * 10) = 100
 		{
 			// Spherical Coordinates
-			float theta = j * (2 * M_PI / hd);
-			float phi = i * (M_PI / vd);
+			float theta = j * (2 * M_PI / hd); // 1 * (2 * 3.14159 / 10) = 0.628318
+			float phi = i * (M_PI / vd); // 1 * (3.14159 / 10) = 0.314159
 
-			float x = r * sin(phi) * cos(theta);
-			float y = r * cos(phi);
-			float z = r * sin(phi) * sin(theta);
+			float x = r * sin(phi) * cos(theta); // 0.3 * sin(0.314159) * cos(0.628318) = 0.99993987163561784810612642895555
+			float y = r * cos(phi); // 0.3 * cos(0.314159)								= 0.99998496779592088228841002347539
+			float z = r * sin(phi) * sin(theta); // 0.3 * sin(0.314159) * sin(0.628318) = 0.99993987163561784810612642895555
 
 			// Simply Normalise the Values for X, Y, Z
-			glm::vec3 normalised = glm::normalize(glm::vec3(x, y, z));
+			glm::vec3 normalised = glm::normalize(glm::vec3(x, y, z)); // Unit Vector (Length of 1)
 
 			float u = theta / (2 * M_PI);
 			float v = phi / M_PI;
