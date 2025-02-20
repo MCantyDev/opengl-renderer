@@ -43,11 +43,11 @@ std::string Shader::getFileContents(const char* filename)
         shaderStream << shaderFile.rdbuf();
         shaderFile.close();
         shaderCode = shaderStream.str();
-		std::cout << "SUCCESS: SHADER_FILE_SUCCESSFULLY_READ" << std::endl;
+		std::cout << "Setup: Successfully read shader file: " << filename << std::endl;
     } 
     catch (std::ifstream::failure e)
     {
-        std::cerr << "ERROR: SHADER_FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cerr << "Error: Failed to read shader file: " << filename << std::endl;
     }
 
     return shaderCode.c_str();
@@ -67,9 +67,9 @@ GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
 	if (!success)
 	{
 		glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-		std::cerr << "ERROR: SHADER_COMPILATION_FAILED \nINFO: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to compile shader program\nMore Information: " << infoLog << std::endl;
 	}
-	std::cout << "SUCCESS: SHADER_COMPILATION_SUCCESS" << std::endl;
+	std::cout << "Setup: Successfully compiled shader program" << std::endl;
 
 	return shaderID;
 }
@@ -89,11 +89,11 @@ GLuint Shader::createProgram(GLuint vertexShader, GLuint fragmentShader)
 	if (!success)
 	{
 		glGetProgramInfoLog(programID, 512, NULL, infoLog);
-		std::cerr << "ERROR: SHADER_PROGRAM_LINKING_FAILED \nINFO: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to link shader program\nMore Information: " << infoLog << std::endl;
 	}
 	else
 	{
-		std::cout << "SUCCESS: SHADER_PROGRAM_LINKED_SUCCESSFULY" << std::endl;
+		std::cout << "Setup: Successfully linked shader program" << std::endl;
 	}
 
 	return programID;

@@ -187,6 +187,7 @@ while (!glfwWindowShouldClose(window))
 
 // Clean up
 defaultShader.clear();
+lightingShader.clear();
 
 glfwDestroyWindow(window);
 glfwTerminate();

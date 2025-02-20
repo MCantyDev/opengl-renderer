@@ -11,10 +11,10 @@ Cube::Cube()
 	vbo.unbind();
 }
 
-void Cube::draw(Shader& shader)
+void Cube::draw(Shader& s)
 {
-	shader.use();
-	shader.setMat4("model", modelMatrix);
+	s.use();
+	s.setMat4("model", modelMatrix);
 
 	vao.bind();
 	glDrawArrays(GL_TRIANGLES, 0, 36);

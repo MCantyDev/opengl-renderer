@@ -18,11 +18,11 @@ Texture::Texture(const std::string& filePath, bool flipped) : path(filePath)
         GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-        std::cout << "SUCCESS: Successfully loaded texture: " << filePath << std::endl;
+        std::cout << "Setup: Successfully loaded texture: " << filePath << std::endl;
     }
     else
     {
-        std::cout << "ERROR: Failed to load texture: " << filePath << std::endl;
+        std::cout << "Error: Failed to load texture: " << filePath << std::endl;
     }
     stbi_image_free(data);
 }
