@@ -110,14 +110,9 @@ int main()
 	Material baseMaterial( BaseMaterial(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 64.0f );
 	Material texturedMaterial( "assets/woodenCube.png", "assets/woodenCubeSpecular.png", 64.0f );
 
-	Light light
-	{
-		glm::vec3(1.2f, 1.0f, 2.0f),
-		glm::vec3(0.2f, 0.2f, 0.2f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
-	
+	Texture emissionMap("assets/matrix.jpg");
+	emissionMap.activateTexture(2);
+
 	// Lets me draw cubes!
 	Cube cube;
 	Sphere sphere(0.3f, 50, 50);
@@ -125,6 +120,14 @@ int main()
 	// Setup Camera
 	Camera* camera = Camera::GetInstance();
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
+
+	Light light
+	{
+		glm::vec3(1.2f, 1.0f, 2.0f),
+		glm::vec3(0.2f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f)
+	};
 
 	std::vector<glm::vec3> positions = generateRandomPositions(100, -10.0f, 10.0f);
 
@@ -157,6 +160,7 @@ while (!glfwWindowShouldClose(window))
 	glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	// Starting using the Texture Program and use the proper textures
 	defaultShader.use();
 	
@@ -177,9 +181,16 @@ while (!glfwWindowShouldClose(window))
 	for (int i = 0; i < 100; i++)
 	{
 		if (i % 2 == 0)
+		{
 			defaultShader.setMaterial(texturedMaterial);
+			defaultShader.setInt("material.emission", 2);
+			defaultShader.setFloat("time", glfwGetTime() * 0.2);
+		}
 		else
+		{
 			defaultShader.setMaterial(baseMaterial);
+			defaultShader.setInt("material.emission", -1);
+		}
 
 		cube.setPosition(positions[i]);
 		cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.7f, 1.0f));

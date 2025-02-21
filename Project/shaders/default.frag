@@ -11,9 +11,12 @@ struct BaseMaterial
 // Structure for Material (An Object with Texture)
 struct Material 
 {
-	BaseMaterial base;
-	sampler2D diffuse;
-	sampler2D specular;
+	BaseMaterial base; // Base Material so static values can be used
+
+	sampler2D diffuse; // Diffuse Map
+	sampler2D specular; // Specular Map
+	sampler2D emission; // Emission Map
+
 	float shininess;
 };
 
@@ -35,6 +38,7 @@ in vec2 textureCoords;
 
 uniform vec3 viewPos; // Camera's Position (View Matrix)
 uniform Light light; // Light
+uniform float time;
 
 uniform bool useTexture; 
 uniform Material material; // Material
@@ -56,15 +60,38 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); // retreiving higher val from (dot product of viewdir and reflectdir) or 0. Then raising it by the power of our materials shininess
 	vec3 specular;
 
+	// Emission Lighting
+	vec3 emission = vec3(0.0);
+	vec3 finalEmission;
+
 	// Result
 	vec3 result;
 	
+	// As i wanted to use either a texture or not. 
 	if (useTexture)
 	{
-		ambient = light.ambient * vec3(texture(material.diffuse, textureCoords)).rgb;
-		diffuse = light.diffuse * diff * vec3(texture(material.diffuse, textureCoords)).rgb;
-		specular = light.specular * spec * vec3(texture(material.specular, textureCoords)).rgb;
-		result = (ambient + diffuse + specular);
+		ambient = light.ambient * vec3(texture(material.diffuse, textureCoords)).rgb; // Ambient Lighting based on the diffuse texture
+		diffuse = light.diffuse * diff * vec3(texture(material.diffuse, textureCoords)).rgb; // Diffuse texture using the diffuse map
+		specular = light.specular * spec * vec3(texture(material.specular, textureCoords)).rgb; // Specular based on the specular map
+
+		// Messing around with Emission Shader
+		if (texture(material.specular, textureCoords).r == 0.0)
+		{
+			// Slowly Fade in and out
+			emission = texture(material.emission, textureCoords).rgb * (sin(time) * 0.5 + 0.5) * 2;
+
+			// Retrieving the Green values of the Texture (As it is Green)
+			float emissionMask = (texture(material.emission, textureCoords + vec2(0.0, time)).g * 2); // Multiplying them by 2 as it brightens it a little
+
+			// Changing the Colour slowly
+			vec3 emissionColour = vec3(sin(time * 0.7), sin(time * 1.3), sin(time * 1.9));
+
+			// Working out the Final Emission amount
+			finalEmission = emission * emissionMask * emissionColour;
+		}
+
+		// Adding all the values together
+		result = (ambient + diffuse + specular + finalEmission);
 	}
 	else
 	{
