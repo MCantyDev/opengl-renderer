@@ -102,14 +102,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
   </PropertyGroup>

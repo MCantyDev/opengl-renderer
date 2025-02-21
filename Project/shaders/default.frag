@@ -12,8 +12,8 @@ struct BaseMaterial
 struct Material 
 {
 	BaseMaterial base;
-	sampler2D diffuseTexture;
-	sampler2D specularTexture;
+	sampler2D diffuse;
+	sampler2D specular;
 	float shininess;
 };
 
@@ -33,10 +33,11 @@ in vec3 normal;
 in vec3 fragPos;
 in vec2 textureCoords;
 
-uniform bool useTexture; 
 uniform vec3 viewPos; // Camera's Position (View Matrix)
-uniform Material material; // Material
 uniform Light light; // Light
+
+uniform bool useTexture; 
+uniform Material material; // Material
 
 void main()
 {
@@ -60,9 +61,9 @@ void main()
 	
 	if (useTexture)
 	{
-		ambient = light.ambient * vec3(texture(material.diffuseTexture, textureCoords)).rgb;
-		diffuse = light.diffuse * diff * vec3(texture(material.diffuseTexture, textureCoords)).rgb;
-		specular = light.specular * spec * vec3(texture(material.specularTexture, textureCoords)).rgb;
+		ambient = light.ambient * vec3(texture(material.diffuse, textureCoords)).rgb;
+		diffuse = light.diffuse * diff * vec3(texture(material.diffuse, textureCoords)).rgb;
+		specular = light.specular * spec * vec3(texture(material.specular, textureCoords)).rgb;
 		result = (ambient + diffuse + specular);
 	}
 	else

@@ -9,13 +9,19 @@ BaseMaterial::BaseMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specu
 
 // Custom Constructors for Material
 Material::Material(const BaseMaterial& base, float shininess)
-	: base(base), useTextures(false), shininess(shininess)
+	: base(base), shininess(shininess), useTextures(false)
+{
+
+}
+
+Material::Material(const char* diffusePath, const char* specularPath, float shininess)
+	: base(), diffuse(Texture(diffusePath)), specular(Texture(specularPath)), shininess(shininess)
 {
 
 }
 
 Material::Material(const Texture& diffuse, const Texture& specular, float shininess)
-	: base(), diffuseTexture(diffuse), specularTexture(specular), useTextures(true)
+	: base(), diffuse(diffuse), specular(specular), shininess(shininess), useTextures(true)
 {
 
 }
@@ -188,15 +194,15 @@ void Shader::setFloat(const std::string& name, float v1, float v2, float v3, flo
 }
 
 // Functions which are using GLM Vectors instead of just standard floats
-void Shader::setFloat(const std::string& name, const glm::vec2& value)
+void Shader::setVec2(const std::string& name, const glm::vec2& value)
 {
 	glUniform2f(getLocation(name), value.x, value.y);
 }
-void Shader::setFloat(const std::string& name, const glm::vec3& value)
+void Shader::setVec3(const std::string& name, const glm::vec3& value)
 {
 	glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
-void Shader::setFloat(const std::string& name, const glm::vec4& value)
+void Shader::setVec4(const std::string& name, const glm::vec4& value)
 {
 	glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
 }
@@ -214,27 +220,29 @@ void Shader::setMaterial(const Material& material)
 	{
 		// If no textures was provided to use material
 		setBool("useTexture", false);
-		setFloat("material.base.ambient", material.base.ambient);
-		setFloat("material.base.diffuse", material.base.diffuse);
-		setFloat("material.base.specular", material.base.specular);
+		
+		setVec3("material.base.ambient", material.base.ambient);
+		setVec3("material.base.diffuse", material.base.diffuse);
+		setVec3("material.base.specular", material.base.specular);
+
 		setFloat("material.shininess", material.shininess);
 	}
 	else
 	{
-		setBool("useTexture", true);
-		material.diffuseTexture.activateTexture(0);
-		material.specularTexture.activateTexture(1);
-		setFloat("material.shininess", material.shininess);
+		material.diffuse.activateTexture(0);
+		material.specular.activateTexture(1);
 
-		setInt("material.diffuseTexture", 0);
-		setInt("material.specularTexture", 1);
+		setBool("useTexture", true);
+		setInt("material.diffuse", 0);
+		setInt("material.specular", 1);
+		setFloat("material.shininess", material.shininess);
 	}
 }
 
 void Shader::setLight(const Light& light)
 {
-	setFloat("light.position", light.position);
-	setFloat("light.ambient", light.ambient);
-	setFloat("light.diffuse", light.diffuse);
-	setFloat("light.specular", light.specular);
+	setVec3("light.position", light.position);
+	setVec3("light.ambient", light.ambient);
+	setVec3("light.diffuse", light.diffuse);
+	setVec3("light.specular", light.specular);
 }

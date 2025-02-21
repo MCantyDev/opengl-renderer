@@ -27,12 +27,14 @@ struct BaseMaterial
 struct Material
 {
 	BaseMaterial base;
-	Texture diffuseTexture;
-	Texture specularTexture;
+
+	Texture diffuse;
+	Texture specular;
 	float shininess;
 	bool useTextures;
 	
 	Material(const BaseMaterial& base, float shininess);
+	Material(const char* diffusePath, const char* specularPath, float shininess);
 	Material(const Texture& diffuse, const Texture& specular, float shininess);
 };
 
@@ -68,9 +70,9 @@ public:
 	void setFloat(const std::string& name, float v1, float v2, float v3);
 	void setFloat(const std::string& name, float v1, float v2, float v3, float v4);
 
- 	void setFloat(const std::string& name, const glm::vec2& value);
-	void setFloat(const std::string& name, const glm::vec3& value);
-	void setFloat(const std::string& name, const glm::vec4& value);
+ 	void setVec2(const std::string& name, const glm::vec2& value);
+	void setVec3(const std::string& name, const glm::vec3& value);
+	void setVec4(const std::string& name, const glm::vec4& value);
 	
 	void setMat4(const std::string& name, const glm::mat4& mat);
 	

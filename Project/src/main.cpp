@@ -25,6 +25,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 */
 void processInput(GLFWwindow* window);
 
+unsigned int loadTexture(char const* path);
+
 
 std::vector<glm::vec3> generateRandomPositions(int numPositions, float minValue, float maxValue) {
 	std::random_device rd;
@@ -96,7 +98,7 @@ int main()
 	
 	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
+
 
 	// Setup the Shaders, both the Vertex and Fragment ones
 	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
@@ -105,22 +107,27 @@ int main()
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
 	glEnable(GL_DEPTH_TEST);
 
-	// Setup Camera
-	Camera* camera = Camera::GetInstance();
-	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
+	Material baseMaterial( BaseMaterial(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 64.0f );
+	Material texturedMaterial( "assets/woodenCube.png", "assets/woodenCubeSpecular.png", 64.0f );
 
+	Light light
+	{
+		glm::vec3(1.2f, 1.0f, 2.0f),
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f)
+	};
+	
 	// Lets me draw cubes!
 	Cube cube;
 	Sphere sphere(0.3f, 50, 50);
 
-	std::vector<glm::vec3> positions = generateRandomPositions(5000, -20.0f, 20.0f);
-	Material baseMaterial = { BaseMaterial(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 64.0f };
-	// Material textureMaterial = { Texture("assets/woodenCube.png"), Texture("assets/woodenCubeSpecular.png") };
+	// Setup Camera
+	Camera* camera = Camera::GetInstance();
+	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 
-	Texture t1("assets/woodenCube.png", false);
-	Texture t2("assets/woodenCubeSpecular.png", false);
-	t1.activateTexture(0);
-	t2.activateTexture(1);
+	std::vector<glm::vec3> positions = generateRandomPositions(100, -10.0f, 10.0f);
+
 
 // Run loop of the application
 while (!glfwWindowShouldClose(window))
@@ -152,54 +159,43 @@ while (!glfwWindowShouldClose(window))
 
 	// Starting using the Texture Program and use the proper textures
 	defaultShader.use();
-
+	
+	// Setup Projection Matrix
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(camera->getFov()), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
 	defaultShader.setMat4("projection", projection);
 
+	// Setup View Matrix
 	glm::mat4 view = camera->getView();
 	defaultShader.setMat4("view", view);
-	
 
-	glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
-	glm::vec3 objectColour = glm::vec3(1.0f, 0.5f, 0.31f);
-
-
-	Light light = {
-		glm::vec3(1.2f, 1.0f, 2.0f),	// Light Position
-
-		glm::vec3(0.2f),	// Light Ambient
-		glm::vec3(0.5f),	// Light Diffuse
-		glm::vec3(1.0f)		// Light Specular
-	};
-	defaultShader.setBool("useTexture", true);
-
-	defaultShader.setInt("material.diffuseTexture", 0);
-	defaultShader.setInt("material.specularTexture", 1);
-
+	// Provide the Shader the Uniforms that are needed for Rendering Light
 	defaultShader.setLight(light);
+	defaultShader.setVec3("viewPos", camera->getPos());
 
-	// material properties
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	defaultShader.setFloat("viewPos", camera->getPos());
-
-	for (int i = 0; i < 1; i++)
+	// Give the Shader the Proper Material
+	for (int i = 0; i < 100; i++)
 	{
+		if (i % 2 == 0)
+			defaultShader.setMaterial(texturedMaterial);
+		else
+			defaultShader.setMaterial(baseMaterial);
+
 		cube.setPosition(positions[i]);
-		// cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.5f, 0.0f));
+		cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.7f, 1.0f));
+		
 		cube.draw(defaultShader);
 	}
 
 	lightingShader.use();
 	lightingShader.setMat4("projection", projection);
 	lightingShader.setMat4("view", view);
-	lightingShader.setFloat("lightColour", glm::vec3(1.0f));
+	lightingShader.setVec3("lightColour", light.diffuse);
 
-	sphere.setScale(glm::vec3(0.2f));
-	sphere.setPosition(lightPos);
+	sphere.setPosition(light.position);
+	sphere.setScale(glm::vec3(0.5f));
 	sphere.draw(lightingShader);
-	
+
 	// Swap the buffers and Poll+Call events
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -210,7 +206,7 @@ defaultShader.clear();
 lightingShader.clear();
 
 glfwDestroyWindow(window);
-glfwTerminate();
+glfwTerminate(); 
 
 return 0;
 }

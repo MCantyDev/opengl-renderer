@@ -11,7 +11,7 @@ class Texture
 public:
     // Constructor that loads a texture
     Texture() = default;
-    Texture(const std::string& filePath, bool flipped = true);
+    Texture(const std::string& filePath, bool flipped = false);
     ~Texture();
 
     void bind() const;
