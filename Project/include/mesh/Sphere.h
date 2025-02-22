@@ -52,7 +52,7 @@ Indices:
 -------
 Indices are quite important when creating spherical geometry as unlike a cube which only has 36 vertices, spherical geometry grows INCREDIBLY fast. 
 For example a (1.0f, 50, 50) sphere would have 2601 vertices (Formula is (sectors + 1) * (stacks + 1) or (50 + 1) * (50 + 1) = 2601)
-*/
+*/  
 
 /* @class Sphere */
 class Sphere : public Primitive

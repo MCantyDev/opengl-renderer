@@ -7,36 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "textures/Texture.h"
+#include "material/Material.h"
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-struct BaseMaterial
-{
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-
-	BaseMaterial() = default;
-	BaseMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-};
-
-struct Material
-{
-	BaseMaterial base;
-
-	Texture diffuse;
-	Texture specular;
-	float shininess;
-	bool useTextures;
-	
-	Material(const BaseMaterial& base, float shininess);
-	Material(const char* diffusePath, const char* specularPath, float shininess);
-	Material(const Texture& diffuse, const Texture& specular, float shininess);
-};
 
 struct Light
 {
@@ -90,6 +66,7 @@ private:
 	GLuint compileShader(const char* shaderCode, GLenum shaderType);
 	GLuint createProgram(GLuint vertexShader, GLuint fragmentShader);
 	GLuint getLocation(const std::string& name);
+	void bind(GLuint texture, GLuint textureID);
 };
 
 #endif // SHADER_H

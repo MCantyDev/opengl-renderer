@@ -19,6 +19,7 @@ public:
 	* @return Camera* instance - A pointer to the Camera instance
 	*/
 	static Camera* GetInstance();
+
 	/*
 	* @brief Static function that destroys the instance of Camera.
 	*/

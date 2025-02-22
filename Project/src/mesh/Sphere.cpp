@@ -34,9 +34,9 @@ std::vector<float> Sphere::generateVertices(float r, int vd, int hd) // 0.3, 10,
 {
 	std::vector<float> vertices;
 
-	for (int i = 0; i <= vd; i++) // until i = 10 (10 times)
+	for (int i = 0; i <= vd; i++) // until i = 10 (11 times)
 	{
-		for (int j = 0; j <= hd; j++) // until j = 10 (10 times)  (10 * 10) = 100
+		for (int j = 0; j <= hd; j++) // until j = 10 (11 times)  (11 * 11) = 121
 		{
 			// Spherical Coordinates
 			float theta = j * (2 * M_PI / hd); // 1 * (2 * 3.14159 / 10) = 0.628318

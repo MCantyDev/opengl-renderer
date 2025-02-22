@@ -5,6 +5,8 @@
 #include "buffers/VAO.h"
 #include "buffers/VBO.h"
 
+#include "mesh/Object.h"
+
 /*
 * @class Primitive
 * @brief Abstract class created for primitives that allows you to scale and draw the primitives as wanted. Gives a standard Virtual draw function to be created.

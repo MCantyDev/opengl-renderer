@@ -1,4 +1,4 @@
-#include "camera/Camera.h"
+#include "core/Camera.h"
 
 // Singleton Pattern
 Camera* Camera::instance = nullptr;
@@ -19,6 +19,15 @@ Camera::~Camera()
 		std::cout << "Closing: Camera destroyed" << std::endl;
 	}
 }
+void Camera::DestroyInstance()
+{
+	if (instance)
+	{
+		delete instance;
+		instance = nullptr;
+		std::cout << "Process: Camera destroyed" << std::endl;
+	}
+}
 
 Camera* Camera::GetInstance()
 {
@@ -29,15 +38,6 @@ Camera* Camera::GetInstance()
 	return instance; // Returns instance of already created, or newly created camera based on the instance ptr
 }
 
-void Camera::DestroyInstance()
-{
-	if (instance)
-	{
-		delete instance;
-		instance = nullptr;
-		std::cout << "Process: Camera destroyed" << std::endl;
-	}
-}
 
 void Camera::initialiseCamera(GLFWwindow* w, glm::vec3 p)
 {
@@ -216,13 +216,13 @@ void Camera::processScroll(double xo, double yo)
 void Camera::processClick(int b, int a, int m)
 {
 	// If user clicks Right Mouse Button
-	if (b == GLFW_MOUSE_BUTTON_RIGHT && a == GLFW_PRESS)
+	if (b == GLFW_MOUSE_BUTTON_MIDDLE && a == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Disables/Hides Cursor
 	}
 
 	// If user lets go of Right Mouse Button
-	if (b == GLFW_MOUSE_BUTTON_RIGHT && a == GLFW_RELEASE)
+	if (b == GLFW_MOUSE_BUTTON_MIDDLE && a == GLFW_RELEASE)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Sets Cursor back to being Visable
 		firstMouse = true; // Reset First Mouse so we dont jump based on the lastX and lastY positions

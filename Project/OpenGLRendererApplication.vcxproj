@@ -19,18 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
+    <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\core\MaterialManager.cpp" />
+    <ClCompile Include="src\core\ObjectManager.cpp" />
+    <ClCompile Include="src\core\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\material\Base.cpp" />
+    <ClCompile Include="src\material\Material.cpp" />
     <ClCompile Include="src\mesh\Cube.cpp" />
     <ClCompile Include="src\mesh\Primitive.cpp" />
     <ClCompile Include="src\mesh\Sphere.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\textures\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
@@ -39,15 +43,20 @@
     <None Include="shaders\lighting.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
+    <ClInclude Include="include\core\Camera.h" />
+    <ClInclude Include="include\core\MaterialManager.h" />
+    <ClInclude Include="include\core\ObjectManager.h" />
+    <ClInclude Include="include\core\TextureManager.h" />
+    <ClInclude Include="include\material\Base.h" />
+    <ClInclude Include="include\material\Material.h" />
+    <ClInclude Include="include\mesh\Object.h" />
     <ClInclude Include="include\mesh\Primitive.h" />
     <ClInclude Include="include\mesh\Cube.h" />
     <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />
-    <ClInclude Include="include\textures\Texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

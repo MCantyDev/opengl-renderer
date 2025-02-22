@@ -1,32 +1,5 @@
 #include "shaders/Shader.h"
 
-// Custom Constructor for BaseMaterial
-BaseMaterial::BaseMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
-	: ambient(ambient), diffuse(diffuse), specular(specular)
-{
-
-}
-
-// Custom Constructors for Material
-Material::Material(const BaseMaterial& base, float shininess)
-	: base(base), shininess(shininess), useTextures(false)
-{
-
-}
-
-Material::Material(const char* diffusePath, const char* specularPath, float shininess)
-	: base(), diffuse(Texture(diffusePath)), specular(Texture(specularPath)), shininess(shininess)
-{
-
-}
-
-Material::Material(const Texture& diffuse, const Texture& specular, float shininess)
-	: base(), diffuse(diffuse), specular(specular), shininess(shininess), useTextures(true)
-{
-
-}
-
-
 Shader::Shader(const char* vertexFile, const char* fragmentFile)
 {
 	std::string vertexCode = getFileContents(vertexFile);
@@ -60,24 +33,24 @@ GLuint Shader::getID()
 
 std::string Shader::getFileContents(const char* filename)
 {
-    std::string shaderCode;
-    std::ifstream shaderFile;
-    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try
-    {
-        shaderFile.open(filename);
-        std::stringstream shaderStream;
-        shaderStream << shaderFile.rdbuf();
-        shaderFile.close();
-        shaderCode = shaderStream.str();
+	std::string shaderCode;
+	std::ifstream shaderFile;
+	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
+	{
+		shaderFile.open(filename);
+		std::stringstream shaderStream;
+		shaderStream << shaderFile.rdbuf();
+		shaderFile.close();
+		shaderCode = shaderStream.str();
 		std::cout << "Setup: Successfully read shader file: " << filename << std::endl;
-    } 
-    catch (std::ifstream::failure e)
-    {
-        std::cerr << "Error: Failed to read shader file: " << filename << std::endl;
-    }
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cerr << "Error: Failed to read shader file: " << filename << std::endl;
+	}
 
-    return shaderCode.c_str();
+	return shaderCode.c_str();
 }
 
 GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
@@ -216,11 +189,11 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 // Simple Function to change the Material of the Object
 void Shader::setMaterial(const Material& material)
 {
-	if (!material.useTextures)
+	if (!material.useTexture)
 	{
 		// If no textures was provided to use material
 		setBool("useTexture", false);
-		
+
 		setVec3("material.base.ambient", material.base.ambient);
 		setVec3("material.base.diffuse", material.base.diffuse);
 		setVec3("material.base.specular", material.base.specular);
@@ -229,14 +202,24 @@ void Shader::setMaterial(const Material& material)
 	}
 	else
 	{
-		material.diffuse.activateTexture(0);
-		material.specular.activateTexture(1);
-
-		setBool("useTexture", true);
+		bind(material.diffuseTexture, 0);
 		setInt("material.diffuse", 0);
+
+		bind(material.specularTexture, 1);
 		setInt("material.specular", 1);
+
+		bind(material.emissionTexture, 2);
+		setInt("material.emission", 2);
+
 		setFloat("material.shininess", material.shininess);
+		setBool("useTexture", true);
 	}
+}
+
+void Shader::bind(GLuint texture, GLuint textureID)
+{
+	glActiveTexture(GL_TEXTURE0 + textureID);
+	glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 void Shader::setLight(const Light& light)

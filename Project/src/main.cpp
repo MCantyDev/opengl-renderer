@@ -5,10 +5,11 @@
 
 // Custom Components
 #include "shaders/Shader.h"
-#include "buffers/VBO.h"
-#include "buffers/VAO.h"	
-#include "textures/Texture.h"
-#include "camera/Camera.h"
+
+#include "core/Camera.h"
+#include "core/ObjectManager.h"
+#include "core/TextureManager.h"
+#include "core/MaterialManager.h"
 
 // Meshes
 #include "mesh/Cube.h"
@@ -19,13 +20,12 @@
 * Find - glfwSetFramebufferSizeCallback()
 */
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 /*
 * Purpose - Process user input
 * Find - processInput(window) in while loop
 */
 void processInput(GLFWwindow* window);
-
-unsigned int loadTexture(char const* path);
 
 
 std::vector<glm::vec3> generateRandomPositions(int numPositions, float minValue, float maxValue) {
@@ -99,6 +99,10 @@ int main()
 	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
+	// Setup Singleton Instances
+	Camera* camera = Camera::GetInstance();
+	TextureManager* textureManager = TextureManager::GetInstance();
+	MaterialManager* materialManager = MaterialManager::GetInstance();
 
 	// Setup the Shaders, both the Vertex and Fragment ones
 	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
@@ -107,19 +111,27 @@ int main()
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
 	glEnable(GL_DEPTH_TEST);
 
-	Material baseMaterial( BaseMaterial(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 64.0f );
-	Material texturedMaterial( "assets/woodenCube.png", "assets/woodenCubeSpecular.png", 64.0f );
-
-	Texture emissionMap("assets/matrix.jpg");
-	emissionMap.activateTexture(2);
 
 	// Lets me draw cubes!
 	Cube cube;
 	Sphere sphere(0.3f, 50, 50);
 
-	// Setup Camera
-	Camera* camera = Camera::GetInstance();
+
+	// Initialise
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
+
+	textureManager->addTexture("wood_diffuse", "assets/woodenCube.png");
+	textureManager->addTexture("wood_specular", "assets/woodenCubeSpecular.png");
+	textureManager->addTexture("wood_emission", "assets/matrix.jpg");
+
+	Material baseMaterial( Base(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 256.0f );
+
+	Material texturedMaterial(
+		textureManager->getTexture("wood_diffuse"), 
+		textureManager->getTexture("wood_specular"), 
+		textureManager->getTexture("wood_emission"), 
+		64.0f
+	);
 
 	Light light
 	{
@@ -130,7 +142,6 @@ int main()
 	};
 
 	std::vector<glm::vec3> positions = generateRandomPositions(100, -10.0f, 10.0f);
-
 
 // Run loop of the application
 while (!glfwWindowShouldClose(window))
@@ -177,26 +188,11 @@ while (!glfwWindowShouldClose(window))
 	defaultShader.setLight(light);
 	defaultShader.setVec3("viewPos", camera->getPos());
 
-	// Give the Shader the Proper Material
-	for (int i = 0; i < 100; i++)
-	{
-		if (i % 2 == 0)
-		{
-			defaultShader.setMaterial(texturedMaterial);
-			defaultShader.setInt("material.emission", 2);
-			defaultShader.setFloat("time", glfwGetTime() * 0.2);
-		}
-		else
-		{
-			defaultShader.setMaterial(baseMaterial);
-			defaultShader.setInt("material.emission", -1);
-		}
-
-		cube.setPosition(positions[i]);
-		cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.7f, 1.0f));
-		
-		cube.draw(defaultShader);
-	}
+	defaultShader.setMaterial(texturedMaterial);
+	defaultShader.setFloat("time", glfwGetTime() * 0.2);
+	cube.setPosition(positions[0]);
+	cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.7f, 1.0f));
+	cube.draw(defaultShader);
 
 	lightingShader.use();
 	lightingShader.setMat4("projection", projection);
