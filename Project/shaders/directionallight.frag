@@ -81,7 +81,7 @@ void main()
 			emission = texture(material.emission, textureCoords).rgb * (sin(time) * 0.5 + 0.5) * 2;
 
 			// Retrieving the Green values of the Texture (As it is Green)
-			float emissionMask = (texture(material.emission, textureCoords + vec2(0.0, time)).g * 2); // Multiplying them by 2 as it brightens it a little
+			vec3 emissionMask = (texture(material.emission, textureCoords + vec2(0.0, time)).rgb * 2); // Multiplying them by 2 as it brightens it a little
 
 			// Changing the Colour slowly
 			vec3 emissionColour = vec3(sin(time * 0.7), sin(time * 1.3), sin(time * 1.9));

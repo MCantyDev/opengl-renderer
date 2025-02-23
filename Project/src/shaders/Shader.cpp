@@ -207,6 +207,8 @@ void Shader::setMaterial(Material* material)
 	}
 	else
 	{
+		setBool("useTexture", true);
+
 		bind(material->diffuseTexture, 0);
 		setInt("material.diffuse", 0);
 
@@ -217,7 +219,6 @@ void Shader::setMaterial(Material* material)
 		setInt("material.emission", 2);
 
 		setFloat("material.shininess", material->shininess);
-		setBool("useTexture", true);
 	}
 }
 
