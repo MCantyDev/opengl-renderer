@@ -8,19 +8,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "material/Material.h"
+#include "lighting/Light.h"
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-struct Light
-{
-	glm::vec3 position; 
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-};
 
 class Shader
 {
@@ -53,7 +46,7 @@ public:
 	void setMat4(const std::string& name, const glm::mat4& mat);
 	
 	// Overloaded as sometimes i may not have a texture
-	void setMaterial(const Material& material);
+	void setMaterial(Material* material);
 
 	void setLight(const Light& light);
 	

@@ -7,6 +7,13 @@
 #include "glad/glad.h"
 #include "stb/stb_image.h"
 
+enum TextureType
+{
+	TEXTURE_DIFFUSE,
+	TEXTURE_SPECULAR,
+	TEXTURE_EMISSION
+};
+
 // Singleton
 class TextureManager
 {
@@ -16,19 +23,20 @@ public:
 
 	~TextureManager();
 
-	GLuint getTexture(const char* textureName);
+	GLuint getTexture(const char* textureName, TextureType textureType);
+	GLuint addTexture(const char* textureName, TextureType textureType, const char* texturePath);
 
-	void addTexture(const char* textureName, const char* texturePath);
-	void deleteTexture(const char* textureName);
+	void deleteTexture(const char* textureName, TextureType textureType);
 
 private:
 	TextureManager();
 	static TextureManager* instance; 
 
 	// Map of Textures
-	std::unordered_map<std::string, GLuint> textureMap;
+	std::unordered_map<TextureType, std::unordered_map<std::string, GLuint>> textureMap;
 
 	GLuint loadTexture(const char* path);
+	std::string getTextureTypeName(TextureType type);
 
 	TextureManager(const TextureManager&) = delete;
 	TextureManager& operator=(const TextureManager&) = delete;

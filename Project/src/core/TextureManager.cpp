@@ -37,34 +37,52 @@ void TextureManager::DeleteInstance()
 	}
 }
 
-GLuint TextureManager::getTexture(const char* textureName)
+GLuint TextureManager::getTexture(const char* textureName, TextureType textureType)
 {
-	auto it = textureMap.find(textureName);
+	auto typeIt = textureMap.find(textureType);
 
-	if (it != textureMap.end())
+	if (typeIt != textureMap.end())
 	{
-		return it->second;
+		auto& innerMap = typeIt->second;
+		
+		auto innerIt = innerMap.find(textureName);
+		if (innerIt != innerMap.end())
+		{
+			return innerIt->second;
+		}
 	}
 	return -1;
 }
 
-void TextureManager::addTexture(const char* textureName, const char* texturePath)
+GLuint TextureManager::addTexture(const char* textureName, TextureType textureType, const char* texturePath)
 {
 	GLuint texture = loadTexture(texturePath);
 
 	if (texture == -1)
 	{
-		std::cout << "Error: Failed to load texture: " << texturePath << std::endl;
-		return;
+		std::cout << "Functional Error: Failed to load texture: " << texturePath << std::endl;
+		return -1;
 	}
-	textureMap.insert({textureName, texture});
-	std::cout << "Functional: Adding Texture to Texture Manager - Name: \"" << textureName << "\"" << std::endl;
+	textureMap[textureType][textureName] = texture;
+	std::cout << "Functional: Adding " << getTextureTypeName(textureType) << " Texture to Texture Manager - Name: \"" << textureName << "\"" << std::endl;
+	return texture;
 }
 
-void TextureManager::deleteTexture(const char* textureName)
+void TextureManager::deleteTexture(const char* textureName, TextureType textureType)
 {
-	textureMap.erase(textureName);
-	std::cout << "Functional: Removing Texture from Texture Manager - Name: \"" << textureName << "\"" << std::endl;
+	auto typeIt = textureMap.find(textureType);
+	
+	if (typeIt != textureMap.end())
+	{
+		auto& innerMap = typeIt->second;
+		innerMap.erase(textureName);
+
+		if (innerMap.empty())
+		{
+			textureMap.erase(textureType);
+		}
+	}
+	std::cout << "Functional: Removing " << getTextureTypeName(textureType) << " Texture from Texture Manager - Name: \"" << textureName << "\"" << std::endl;
 }
 
 GLuint TextureManager::loadTexture(const char* path)
@@ -98,4 +116,17 @@ GLuint TextureManager::loadTexture(const char* path)
 		return -1;
 	}
 	stbi_image_free(data);
+}
+
+std::string TextureManager::getTextureTypeName(TextureType type) {
+	switch (type) {
+		case TEXTURE_DIFFUSE:
+			return "Diffuse";
+		case TEXTURE_SPECULAR:
+			return "Specular";
+		case TEXTURE_EMISSION:
+			return "Emission";
+		default:             
+			return "Unknown";
+	}
 }

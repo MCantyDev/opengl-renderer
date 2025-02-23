@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <iostream>
 
+#include "core/TextureManager.h"
 #include "material/Material.h"
 
 // Singleton
@@ -15,14 +16,16 @@ public:
 
 	~MaterialManager();
 
-	Material* getMaterial(std::string materialName);
+	Material* getMaterial(const char* materialName);
 
-	void addMaterial(const Material& material);
-	void deleteMaterial(std::string materialName);
+	void addMaterial(const char* materialName, const Material& material);
+	void deleteMaterial(const char* materialName);
+	void changeMaterialTexture(const char* materialName, const char* textureName, TextureType textureType);
 
 private:
 	MaterialManager();
 	static MaterialManager* instance;
+	TextureManager* textureManager = TextureManager::GetInstance();
 
 	// Map of Materials
 	std::unordered_map<std::string, Material> materialMap;

@@ -37,9 +37,6 @@
     <Filter Include="Resource Files\shaders\default">
       <UniqueIdentifier>{113a7170-4fd9-4eb1-9d62-e4ad0717c48a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\shaders\lighting">
-      <UniqueIdentifier>{c4347861-48a6-4bf4-a1f5-026ceb58efe1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\core">
       <UniqueIdentifier>{bd46b975-7af3-4e8f-a1d4-fd3c5785c4bf}</UniqueIdentifier>
     </Filter>
@@ -51,6 +48,18 @@
     </Filter>
     <Filter Include="Source Files\material">
       <UniqueIdentifier>{49167d2d-0dc4-4b0c-b275-5d979d6f7878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lighting">
+      <UniqueIdentifier>{ffd6aac1-f5a5-42bd-bc75-369c9d4ebf62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lighting">
+      <UniqueIdentifier>{1ffc71c8-c002-441c-936f-358c7f37c293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\lightingTypes">
+      <UniqueIdentifier>{e175a06c-4f26-4833-82fd-f1ed2513a3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\lightShader">
+      <UniqueIdentifier>{c4347861-48a6-4bf4-a1f5-026ceb58efe1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,10 +120,19 @@
       <Filter>Resource Files\shaders\default</Filter>
     </None>
     <None Include="shaders\lighting.frag">
-      <Filter>Resource Files\shaders\lighting</Filter>
+      <Filter>Resource Files\shaders\lightShader</Filter>
     </None>
     <None Include="shaders\lighting.vert">
-      <Filter>Resource Files\shaders\lighting</Filter>
+      <Filter>Resource Files\shaders\lightShader</Filter>
+    </None>
+    <None Include="shaders\directionallight.frag">
+      <Filter>Resource Files\shaders\lightingTypes</Filter>
+    </None>
+    <None Include="shaders\pointlight.frag">
+      <Filter>Resource Files\shaders\lightingTypes</Filter>
+    </None>
+    <None Include="shaders\spotlight.frag">
+      <Filter>Resource Files\shaders\lightingTypes</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +177,12 @@
     </ClInclude>
     <ClInclude Include="include\material\Base.h">
       <Filter>Header Files\material</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lighting\Light.h">
+      <Filter>Header Files\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lighting\DirectionalLight.h">
+      <Filter>Header Files\lighting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

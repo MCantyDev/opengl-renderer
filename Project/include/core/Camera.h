@@ -41,6 +41,12 @@ public:
 	* @return const glm::vec3 - const - The position of the Camera
 	*/
 	glm::vec3 getPos() const;
+
+	/*
+	* @brief Returns the Front vector of the Camera
+	* @return const glm::vec3 - const - The front vector of the Camera
+	*/
+	glm::vec3 getFront() const;
 	/*
 	* @brief Returns a float of the Camera's FOV
 	* @return const float fov - const - FOV of the Camera

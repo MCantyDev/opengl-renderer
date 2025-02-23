@@ -69,7 +69,7 @@ GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
 		glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
 		std::cerr << "Error: Failed to compile shader program\nMore Information: " << infoLog << std::endl;
 	}
-	std::cout << "Setup: Successfully compiled shader program" << std::endl;
+	std::cout << "Setup: Successfully compiled shader" << std::endl;
 
 	return shaderID;
 }
@@ -187,31 +187,36 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 }
 
 // Simple Function to change the Material of the Object
-void Shader::setMaterial(const Material& material)
+void Shader::setMaterial(Material* material)
 {
-	if (!material.useTexture)
+	if (material == nullptr)
+	{
+		return;
+	}
+
+	if (!material->useTexture)
 	{
 		// If no textures was provided to use material
 		setBool("useTexture", false);
 
-		setVec3("material.base.ambient", material.base.ambient);
-		setVec3("material.base.diffuse", material.base.diffuse);
-		setVec3("material.base.specular", material.base.specular);
+		setVec3("material.base.ambient", material->base.ambient);
+		setVec3("material.base.diffuse", material->base.diffuse);
+		setVec3("material.base.specular", material->base.specular);
 
-		setFloat("material.shininess", material.shininess);
+		setFloat("material.shininess", material->shininess);
 	}
 	else
 	{
-		bind(material.diffuseTexture, 0);
+		bind(material->diffuseTexture, 0);
 		setInt("material.diffuse", 0);
 
-		bind(material.specularTexture, 1);
+		bind(material->specularTexture, 1);
 		setInt("material.specular", 1);
 
-		bind(material.emissionTexture, 2);
+		bind(material->emissionTexture, 2);
 		setInt("material.emission", 2);
 
-		setFloat("material.shininess", material.shininess);
+		setFloat("material.shininess", material->shininess);
 		setBool("useTexture", true);
 	}
 }
@@ -224,7 +229,7 @@ void Shader::bind(GLuint texture, GLuint textureID)
 
 void Shader::setLight(const Light& light)
 {
-	setVec3("light.position", light.position);
+//	setVec3("light.position", light.position);
 	setVec3("light.ambient", light.ambient);
 	setVec3("light.diffuse", light.diffuse);
 	setVec3("light.specular", light.specular);

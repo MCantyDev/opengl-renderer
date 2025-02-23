@@ -3,7 +3,6 @@
 
 #include "mesh/Object.h"
 
-#include <string>
 #include <iostream>
 #include <unordered_map>
 
@@ -18,13 +17,13 @@ public:
 	Object* getObjects();
 
 	void addObject(const Object& object);
-	void deleteObject(std::string objectName);
+	void deleteObject(int ID);
 
 private:
 	ObjectManager();
 	static ObjectManager* instance;
 	
-	std::unordered_map<std::string, Object> objectMap;
+	std::unordered_map<int, Object> objectMap;
 
 	// Delete the Copy Constructor
 	ObjectManager(const ObjectManager&) = delete;

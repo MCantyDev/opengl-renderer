@@ -1,7 +1,6 @@
 ﻿// Standard Lib Imports
 #include <random>
 #include <vector>
-#include <cmath>
 
 // Custom Components
 #include "shaders/Shader.h"
@@ -52,6 +51,9 @@ std::vector<glm::vec3> generateRandomPositions(int numPositions, float minValue,
 // Constants
 int WIDTH = 1200;
 int HEIGHT = 900;
+int GLFW_MAJOR = 4;
+int GLFW_MINOR = 6;
+const char* WINDOW_NAME = "OpenGL Renderer Application";
 
 // Timing
 // ------------
@@ -64,37 +66,47 @@ int frameCount = 0;
 // Main Function
 int main()
 {
+	std::cout << "Setup: Beginning to initialise application requirements" << std::endl;
+
 	if (!glfwInit()) // Attempt to init glfw
 	{
-		std::cout << "Failed to Initialise GLFW" << std::endl;
+		std::cout << "Error: Failed to Initialise GLFW" << std::endl;
 		return -1; // Return error code
 	}
+	std::cout << "Setup: Initialised GLFW successfully" << std::endl;
 
 	// Setup window hints for version 4.6 of OpenGL (The most recent version
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_MINOR);
+	std::cout << "Setup: Using GLFW version: " << GLFW_MAJOR << "." << GLFW_MINOR << std::endl;
 	// Use the Core profile as that is what is used with GLAD
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	std::cout << "Setup: GLFW_OPENGL_PROFILE: Core Profile Selected" << std::endl;
 
 
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL Renderer Application", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_NAME, nullptr, nullptr);
+	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
+	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << WIDTH <<  std::endl;
+	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << HEIGHT << std::endl;
 
 	if (window == nullptr) // Check if Window was successfully created
 	{
-		std::cout << "Failed to Create Window" << std::endl;
+		std::cout << "Error: Failed to Create Window" << std::endl;
 		glfwTerminate(); // Clean up glfw
 		return -1;
 	}
 	glfwMakeContextCurrent(window); // Make the created window the current context...very useful for next line
 	glfwSwapInterval(0); // Deactivate V-SYNC
-	
+	std::cout << "Setup: V-Sync Deactivated" << std::endl;
+
 	// After making Window current context we can Load GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
 	{
-		std::cout << "Failed to Initialise GLAD" << std::endl;
+		std::cout << "Error: Failed to Initialise GLAD" << std::endl;
 		return -1;
 	}
+	std::cout << "Setup: GLAD Initialised successfully with \"" << WINDOW_NAME << "\" window set as context" << std::endl;
 	
 	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
@@ -103,9 +115,12 @@ int main()
 	Camera* camera = Camera::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
 	MaterialManager* materialManager = MaterialManager::GetInstance();
+	
+	// Initialise
+	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 
 	// Setup the Shaders, both the Vertex and Fragment ones
-	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
+	Shader defaultShader("shaders/default.vert", "shaders/directionallight.frag");
 	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
 
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
@@ -116,106 +131,120 @@ int main()
 	Cube cube;
 	Sphere sphere(0.3f, 50, 50);
 
+	GLuint diff = textureManager->addTexture("wood", TEXTURE_DIFFUSE, "assets/woodenCube.png");
+	GLuint spec = textureManager->addTexture("wood", TEXTURE_SPECULAR, "assets/woodenCubeSpecular.png");
+	GLuint emission = textureManager->addTexture("matrix", TEXTURE_EMISSION, "assets/matrix.jpg");
 
-	// Initialise
-	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
-
-	textureManager->addTexture("wood_diffuse", "assets/woodenCube.png");
-	textureManager->addTexture("wood_specular", "assets/woodenCubeSpecular.png");
-	textureManager->addTexture("wood_emission", "assets/matrix.jpg");
-
-	Material baseMaterial( Base(glm::vec3(0.2f), glm::vec3(0.5f, 0.75f, 0.2f), glm::vec3(0.5f)), 256.0f );
-
-	Material texturedMaterial(
-		textureManager->getTexture("wood_diffuse"), 
-		textureManager->getTexture("wood_specular"), 
-		textureManager->getTexture("wood_emission"), 
-		64.0f
+	// Activate Matrix Emission texture by change -1 to emission
+	materialManager->addMaterial(
+		"woodenCube", 
+		Material( diff, spec, -1, 64.0f) 
 	);
+	
+	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
 
-	Light light
+	std::vector<glm::vec3> positions = generateRandomPositions(50, -10.0, 10.0f);
+
+	// Run loop of the application
+	while (!glfwWindowShouldClose(window))
 	{
-		glm::vec3(1.2f, 1.0f, 2.0f),
-		glm::vec3(0.2f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
+		// Show FPS in title
+		float currFrame = glfwGetTime();
+		deltaTime = currFrame - lastFrame;
+		lastFrame = currFrame;
+		frameCount++;
 
-	std::vector<glm::vec3> positions = generateRandomPositions(100, -10.0f, 10.0f);
+		fpsTimer += deltaTime;
+		if (fpsTimer > 1.0f)
+		{
+			fps = frameCount;
+			frameCount = 0;
+			fpsTimer = 0.0f;
+			std::ostringstream oss;
+			oss << WINDOW_NAME << " - FPS: " << fps; // Build the string
+			glfwSetWindowTitle(window, oss.str().c_str());
+		}
 
-// Run loop of the application
-while (!glfwWindowShouldClose(window))
-{
-	// Show FPS in title
-	float currFrame = glfwGetTime();
-	deltaTime = currFrame - lastFrame;
-	lastFrame = currFrame;
-	frameCount++;
+		// Process input
+		processInput(window);
+		camera->processKeyboardMovement(deltaTime);
 
-	fpsTimer += deltaTime;
-	if (fpsTimer > 1.0f)
-	{
-		fps = frameCount;
-		frameCount = 0;
-		fpsTimer = 0.0f;
-		std::ostringstream oss;
-		oss << "OpenGL Renderer Application - FPS: " << fps; // Build the string
-		glfwSetWindowTitle(window, oss.str().c_str());
+		// Render stuff here
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		// Starting using the Texture Program and use the proper textures
+		defaultShader.use();
+	
+		// Setup Projection Matrix
+		glm::mat4 projection;
+		projection = glm::perspective(glm::radians(camera->getFov()), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
+		defaultShader.setMat4("projection", projection);
+
+		// Setup View Matrix
+		glm::mat4 view = camera->getView();
+		defaultShader.setMat4("view", view);
+
+		// These Values are required for any light
+		defaultShader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		defaultShader.setVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		defaultShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+		// Uncomment this block if using "directionallight.frag" (comment this block if using any other light type)
+		defaultShader.setVec3("light.direction", glm::vec3( -0.2f, -1.0f, -0.3f));
+
+		// Uncomment this block if using "pointlight.frag" (comment this block if using any other light type)
+		/*
+		defaultShader.setVec3("light.position", glm::vec3(1.2f, 1.0f, 2.0f));
+		defaultShader.setFloat("light.constant", 1.0f);
+		defaultShader.setFloat("light.linear", 0.09f);
+		defaultShader.setFloat("light.quadratic", 0.032f);
+
+		lightingShader.use();
+
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
+		lightingShader.setVec3("lightColour", glm::vec3(0.5f, 0.5f, 0.5f));
+		sphere.setPosition(glm::vec3(1.2f, 1.0f, 2.0f));
+		sphere.setScale(glm::vec3(0.5f));
+		sphere.draw(lightingShader);
+
+		defaultShader.use();
+		*/
+		
+
+		// Uncomment this block if using "spotlight.frag" -> Bound to Camera (Like a Flashlight) (comment this block if using any other light type)
+		/*
+		defaultShader.setVec3("light.position", camera->getPos());
+		defaultShader.setVec3("light.direction", camera->getFront());
+		defaultShader.setFloat("light.cutOff", glm::cos(glm::radians(15.0f)));
+		*/
+
+		defaultShader.setVec3("viewPos", camera->getPos());
+		defaultShader.setMaterial(materialManager->getMaterial("woodenCube"));
+		defaultShader.setFloat("time", glfwGetTime() * 0.2);
+	
+		for (int i = 0; i < positions.size(); i++)
+		{
+			cube.setPosition(positions[i]);
+			cube.setRotation(20.f * i, glm::vec3(1.0f, 0.3f, 0.5));
+			cube.draw(defaultShader);
+		}
+
+		// Swap the buffers and Poll+Call events
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
-	// Process input
-	processInput(window);
-	camera->processKeyboardMovement(deltaTime);
+	// Clean up
+	defaultShader.clear();
+	lightingShader.clear();
 
-	// Render stuff here
-	glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glfwDestroyWindow(window);
+	glfwTerminate(); 
 
-
-	// Starting using the Texture Program and use the proper textures
-	defaultShader.use();
-	
-	// Setup Projection Matrix
-	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(camera->getFov()), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
-	defaultShader.setMat4("projection", projection);
-
-	// Setup View Matrix
-	glm::mat4 view = camera->getView();
-	defaultShader.setMat4("view", view);
-
-	// Provide the Shader the Uniforms that are needed for Rendering Light
-	defaultShader.setLight(light);
-	defaultShader.setVec3("viewPos", camera->getPos());
-
-	defaultShader.setMaterial(texturedMaterial);
-	defaultShader.setFloat("time", glfwGetTime() * 0.2);
-	cube.setPosition(positions[0]);
-	cube.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.5f, 0.7f, 1.0f));
-	cube.draw(defaultShader);
-
-	lightingShader.use();
-	lightingShader.setMat4("projection", projection);
-	lightingShader.setMat4("view", view);
-	lightingShader.setVec3("lightColour", light.diffuse);
-
-	sphere.setPosition(light.position);
-	sphere.setScale(glm::vec3(0.5f));
-	sphere.draw(lightingShader);
-
-	// Swap the buffers and Poll+Call events
-	glfwSwapBuffers(window);
-	glfwPollEvents();
-}
-
-// Clean up
-defaultShader.clear();
-lightingShader.clear();
-
-glfwDestroyWindow(window);
-glfwTerminate(); 
-
-return 0;
+	return 0;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
