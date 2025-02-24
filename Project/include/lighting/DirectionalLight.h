@@ -1,15 +1,15 @@
 #ifndef DIRECTIONALLIGHT_H
 #define DIRECTIONALLIGHT_H
 
-#include "glm/glm.hpp"
+#include "lighting/Light.h"
 
-struct DirectionalLight
+class DirectionalLight : public Light
 {
-	glm::vec3 direction;
+public:
+	DirectionalLight() = default;
+	DirectionalLight(glm::vec3 dir, glm::vec3 a, glm::vec3 d, glm::vec3 s);
 
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
+	glm::vec3 direction;
 };
 
 #endif // DIRECTIONALLIGHT_H

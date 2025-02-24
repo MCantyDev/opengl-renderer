@@ -9,6 +9,7 @@
 #include "core/ObjectManager.h"
 #include "core/TextureManager.h"
 #include "core/MaterialManager.h"
+#include "core/LightManager.h"
 
 // Meshes
 #include "mesh/Cube.h"
@@ -49,8 +50,6 @@ std::vector<glm::vec3> generateRandomPositions(int numPositions, float minValue,
 // Settings
 // ------------
 // Constants
-int WIDTH = 1200;
-int HEIGHT = 900;
 int GLFW_MAJOR = 4;
 int GLFW_MINOR = 6;
 const char* WINDOW_NAME = "OpenGL Renderer Application";
@@ -75,7 +74,7 @@ int main()
 	}
 	std::cout << "Setup: Initialised GLFW successfully" << std::endl;
 
-	// Setup window hints for version 4.6 of OpenGL (The most recent version
+	// Setup window hints for version 4.6 of OpenGL (The most recent version)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_MAJOR);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_MINOR);
 	std::cout << "Setup: Using GLFW version: " << GLFW_MAJOR << "." << GLFW_MINOR << std::endl;
@@ -83,22 +82,30 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	std::cout << "Setup: GLFW_OPENGL_PROFILE: Core Profile Selected" << std::endl;
 
+	// Get the Monitor for the Total Size
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_NAME, nullptr, nullptr);
-	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
-	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << WIDTH <<  std::endl;
-	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << HEIGHT << std::endl;
-
+	GLFWwindow* window = glfwCreateWindow(800, 600, WINDOW_NAME, nullptr, nullptr);
 	if (window == nullptr) // Check if Window was successfully created
 	{
 		std::cout << "Error: Failed to Create Window" << std::endl;
 		glfwTerminate(); // Clean up glfw
 		return -1;
 	}
+	glfwMaximizeWindow(window);
+	
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
+	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << width <<  std::endl;
+	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << height << std::endl;
+
 	glfwMakeContextCurrent(window); // Make the created window the current context...very useful for next line
 	glfwSwapInterval(0); // Deactivate V-SYNC
 	std::cout << "Setup: V-Sync Deactivated" << std::endl;
+	
 
 	// After making Window current context we can Load GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
@@ -108,19 +115,20 @@ int main()
 	}
 	std::cout << "Setup: GLAD Initialised successfully with \"" << WINDOW_NAME << "\" window set as context" << std::endl;
 	
-	glViewport(0, 0, WIDTH, HEIGHT); // Set the default viewport
+	glViewport(0, 0, width, height); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
 	// Setup Singleton Instances
 	Camera* camera = Camera::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
 	MaterialManager* materialManager = MaterialManager::GetInstance();
+	LightManager* lightManager = LightManager::GetInstance();
 	
 	// Initialise
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 
 	// Setup the Shaders, both the Vertex and Fragment ones
-	Shader defaultShader("shaders/default.vert", "shaders/directionallight.frag");
+	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
 	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
 
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
@@ -140,7 +148,29 @@ int main()
 		"woodenCube", 
 		Material( diff, spec, -1, 64.0f) 
 	);
+
+	materialManager->addMaterial(
+		"sphere",
+		Material(Base(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f)), 64.0f)
+	);
 	
+	lightManager->addLight(std::make_shared<DirectionalLight>
+	(
+		glm::vec3(-0.2f, -1.0f, -0.3f),
+		glm::vec3(0.0f),
+		glm::vec3(0.3f, 0.3f, 0.3f),
+		glm::vec3(0.06f, 0.06f, 0.6f)
+	), DIRECTIONAL_LIGHT);
+
+	lightManager->addLight(std::make_shared<PointLight>
+	(
+		glm::vec3(1.2f, 1.0f, 2.0f),
+		glm::vec3(0.05f, 0.01f, 0.01f),
+		glm::vec3(0.3f, 0.3f, 0.3f),
+		glm::vec3(0.1f, 0.1f, 0.1f),
+		1.0f, 0.14f, 0.07f
+	), POINT_LIGHT);
+
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
 
 	std::vector<glm::vec3> positions = generateRandomPositions(50, -10.0, 10.0f);
@@ -170,67 +200,54 @@ int main()
 		camera->processKeyboardMovement(deltaTime);
 
 		// Render stuff here
-		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Gray background
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 		// Starting using the Texture Program and use the proper textures
 		defaultShader.use();
+
+		// Make sure we have the correct WIDTH and HEIGHT
+		glfwGetFramebufferSize(window, &width, &height);
 	
 		// Setup Projection Matrix
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(camera->getFov()), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(camera->getFov()), (float)(width / height), 0.1f, 100.0f);
 		defaultShader.setMat4("projection", projection);
 
 		// Setup View Matrix
 		glm::mat4 view = camera->getView();
 		defaultShader.setMat4("view", view);
-
-		// These Values are required for any light
-		defaultShader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-		defaultShader.setVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-		defaultShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-		// Uncomment this block if using "directionallight.frag" (comment this block if using any other light type)
-		defaultShader.setVec3("light.direction", glm::vec3( -0.2f, -1.0f, -0.3f));
-
-		// Uncomment this block if using "pointlight.frag" (comment this block if using any other light type)
-		/*
-		defaultShader.setVec3("light.position", glm::vec3(1.2f, 1.0f, 2.0f));
-		defaultShader.setFloat("light.constant", 1.0f);
-		defaultShader.setFloat("light.linear", 0.09f);
-		defaultShader.setFloat("light.quadratic", 0.032f);
-
-		lightingShader.use();
-
-		lightingShader.setMat4("projection", projection);
-		lightingShader.setMat4("view", view);
-		lightingShader.setVec3("lightColour", glm::vec3(0.5f, 0.5f, 0.5f));
-		sphere.setPosition(glm::vec3(1.2f, 1.0f, 2.0f));
-		sphere.setScale(glm::vec3(0.5f));
-		sphere.draw(lightingShader);
-
-		defaultShader.use();
-		*/
-		
-
-		// Uncomment this block if using "spotlight.frag" -> Bound to Camera (Like a Flashlight) (comment this block if using any other light type)
-		/*
-		defaultShader.setVec3("light.position", camera->getPos());
-		defaultShader.setVec3("light.direction", camera->getFront());
-		defaultShader.setFloat("light.cutOff", glm::cos(glm::radians(15.0f)));
-		*/
-
 		defaultShader.setVec3("viewPos", camera->getPos());
+
+		// Setup Material
 		defaultShader.setMaterial(materialManager->getMaterial("woodenCube"));
-		defaultShader.setFloat("time", glfwGetTime() * 0.2);
-	
+		
+		defaultShader.setInt("numDirLights", lightManager->getMapSize(DIRECTIONAL_LIGHT));
+		std::shared_ptr<Light> light = lightManager->getLight(0, DIRECTIONAL_LIGHT);
+		std::shared_ptr<DirectionalLight> dirLight = std::dynamic_pointer_cast<DirectionalLight>(light);
+		defaultShader.setVec3("dirLights[0].direction", dirLight->direction);
+		defaultShader.setVec3("dirLights[0].ambient", dirLight->ambient);
+		defaultShader.setVec3("dirLights[0].diffuse", dirLight->diffuse);
+		defaultShader.setVec3("dirLights[0].specular", dirLight->specular);
+
+		// Render Multiple Cubes
 		for (int i = 0; i < positions.size(); i++)
 		{
 			cube.setPosition(positions[i]);
 			cube.setRotation(20.f * i, glm::vec3(1.0f, 0.3f, 0.5));
 			cube.draw(defaultShader);
 		}
+
+		lightingShader.use();
+
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
+		//lightingShader.setVec3("lightColour", pointLight.diffuse);
+
+		//sphere.setPosition(pointLight.position);
+		sphere.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+		sphere.draw(lightingShader);
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);

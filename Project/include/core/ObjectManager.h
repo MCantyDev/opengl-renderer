@@ -2,9 +2,18 @@
 #define OBJECTMANAGER_H
 
 #include "mesh/Object.h"
+#include "glad/glad.h"
+
 
 #include <iostream>
 #include <unordered_map>
+
+enum ObjectType
+{
+	BASE_OBJECT,
+	OBJECT_WITH_EMITTER,
+	LIGHT_SOURCE
+};
 
 class ObjectManager
 {
@@ -23,7 +32,7 @@ private:
 	ObjectManager();
 	static ObjectManager* instance;
 	
-	std::unordered_map<int, Object> objectMap;
+	std::unordered_map<GLenum, std::unordered_map<int, Object>> objectMap;
 
 	// Delete the Copy Constructor
 	ObjectManager(const ObjectManager&) = delete;

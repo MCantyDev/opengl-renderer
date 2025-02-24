@@ -119,6 +119,13 @@ void main()
 	}
 	else
 	{
-		FragColor = vec4(light.ambient * texture(material.diffuse, textureCoords).rgb, 1.0);
+		if (useTexture)
+		{
+			FragColor = vec4(light.ambient * texture(material.diffuse, textureCoords).rgb, 1.0);
+		}
+		else
+		{
+			FragColor = vec4(light.ambient * material.base.diffuse, 1.0);
+		}
 	}
 };

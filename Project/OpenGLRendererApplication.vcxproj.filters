@@ -111,6 +111,21 @@
     <ClCompile Include="src\material\Material.cpp">
       <Filter>Source Files\material</Filter>
     </ClCompile>
+    <ClCompile Include="src\lighting\Light.cpp">
+      <Filter>Source Files\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lighting\DirectionalLight.cpp">
+      <Filter>Source Files\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lighting\PointLight.cpp">
+      <Filter>Source Files\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lighting\SpotLight.cpp">
+      <Filter>Source Files\lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\LightManager.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -183,6 +198,15 @@
     </ClInclude>
     <ClInclude Include="include\lighting\DirectionalLight.h">
       <Filter>Header Files\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lighting\PointLight.h">
+      <Filter>Header Files\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lighting\SpotLight.h">
+      <Filter>Header Files\lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\LightManager.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

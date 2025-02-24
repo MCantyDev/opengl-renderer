@@ -23,10 +23,15 @@
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\core\LightManager.cpp" />
     <ClCompile Include="src\core\MaterialManager.cpp" />
     <ClCompile Include="src\core\ObjectManager.cpp" />
     <ClCompile Include="src\core\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\lighting\DirectionalLight.cpp" />
+    <ClCompile Include="src\lighting\Light.cpp" />
+    <ClCompile Include="src\lighting\PointLight.cpp" />
+    <ClCompile Include="src\lighting\SpotLight.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\material\Base.cpp" />
     <ClCompile Include="src\material\Material.cpp" />
@@ -50,11 +55,14 @@
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
     <ClInclude Include="include\core\Camera.h" />
+    <ClInclude Include="include\core\LightManager.h" />
     <ClInclude Include="include\core\MaterialManager.h" />
     <ClInclude Include="include\core\ObjectManager.h" />
     <ClInclude Include="include\core\TextureManager.h" />
     <ClInclude Include="include\lighting\DirectionalLight.h" />
     <ClInclude Include="include\lighting\Light.h" />
+    <ClInclude Include="include\lighting\PointLight.h" />
+    <ClInclude Include="include\lighting\SpotLight.h" />
     <ClInclude Include="include\material\Base.h" />
     <ClInclude Include="include\material\Material.h" />
     <ClInclude Include="include\mesh\Object.h" />
@@ -127,6 +135,12 @@
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -183,6 +197,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

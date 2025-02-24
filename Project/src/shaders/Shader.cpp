@@ -215,9 +215,6 @@ void Shader::setMaterial(Material* material)
 		bind(material->specularTexture, 1);
 		setInt("material.specular", 1);
 
-		bind(material->emissionTexture, 2);
-		setInt("material.emission", 2);
-
 		setFloat("material.shininess", material->shininess);
 	}
 }

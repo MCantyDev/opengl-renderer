@@ -221,13 +221,13 @@ void Camera::processScroll(double xo, double yo)
 void Camera::processClick(int b, int a, int m)
 {
 	// If user clicks Right Mouse Button
-	if (b == GLFW_MOUSE_BUTTON_MIDDLE && a == GLFW_PRESS)
+	if (b == GLFW_MOUSE_BUTTON_LEFT && a == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Disables/Hides Cursor
 	}
 
 	// If user lets go of Right Mouse Button
-	if (b == GLFW_MOUSE_BUTTON_MIDDLE && a == GLFW_RELEASE)
+	if (b == GLFW_MOUSE_BUTTON_LEFT && a == GLFW_RELEASE)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Sets Cursor back to being Visable
 		firstMouse = true; // Reset First Mouse so we dont jump based on the lastX and lastY positions

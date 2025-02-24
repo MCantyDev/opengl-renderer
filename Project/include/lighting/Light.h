@@ -3,9 +3,13 @@
 
 #include "glm/glm.hpp"
 
-struct Light
+class Light
 {
-	glm::vec3 position;
+public:
+	Light() = default;
+	Light(glm::vec3 a, glm::vec3 d, glm::vec3 s);
+
+	virtual ~Light() = default;
 
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
