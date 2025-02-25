@@ -126,6 +126,12 @@
     <ClCompile Include="src\core\LightManager.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\Mesh.cpp">
+      <Filter>Source Files\meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Model.cpp">
+      <Filter>Source Files\meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -140,14 +146,20 @@
     <None Include="shaders\lighting.vert">
       <Filter>Resource Files\shaders\lightShader</Filter>
     </None>
-    <None Include="shaders\directionallight.frag">
+    <None Include="shaders\single lighting\directionallight.frag">
       <Filter>Resource Files\shaders\lightingTypes</Filter>
     </None>
-    <None Include="shaders\pointlight.frag">
+    <None Include="shaders\single lighting\pointlight.frag">
       <Filter>Resource Files\shaders\lightingTypes</Filter>
     </None>
-    <None Include="shaders\spotlight.frag">
+    <None Include="shaders\single lighting\spotlight.frag">
       <Filter>Resource Files\shaders\lightingTypes</Filter>
+    </None>
+    <None Include="shaders\test.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\test.vert">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +219,12 @@
     </ClInclude>
     <ClInclude Include="include\core\LightManager.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Mesh.h">
+      <Filter>Header Files\meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Model.h">
+      <Filter>Header Files\meshes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

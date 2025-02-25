@@ -14,6 +14,7 @@
 // Meshes
 #include "mesh/Cube.h"
 #include "mesh/Sphere.h"
+#include "mesh/Model.h"
 
 /*
 * Purpose - Callback Function when the Window has been resized with cursor. 
@@ -94,10 +95,11 @@ int main()
 		glfwTerminate(); // Clean up glfw
 		return -1;
 	}
-	glfwMaximizeWindow(window);
+	// glfwMaximizeWindow(window);
 	
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	int width = 800;
+	int height = 600;
+	// glfwGetFramebufferSize(window, &width, &height);
 	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << width <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << height << std::endl;
@@ -128,12 +130,10 @@ int main()
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 
 	// Setup the Shaders, both the Vertex and Fragment ones
-	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
-	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
+	Shader defaultShader("shaders/test.vert", "shaders/test.frag");
 
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
 	glEnable(GL_DEPTH_TEST);
-
 
 	// Lets me draw cubes!
 	Cube cube;
@@ -147,11 +147,6 @@ int main()
 	materialManager->addMaterial(
 		"woodenCube", 
 		Material( diff, spec, -1, 64.0f) 
-	);
-
-	materialManager->addMaterial(
-		"sphere",
-		Material(Base(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f)), 64.0f)
 	);
 	
 	lightManager->addLight(std::make_shared<DirectionalLight>
@@ -171,9 +166,10 @@ int main()
 		1.0f, 0.14f, 0.07f
 	), POINT_LIGHT);
 
-	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
-
+	Model ourModel("models/Backpack/backpack.obj");
 	std::vector<glm::vec3> positions = generateRandomPositions(50, -10.0, 10.0f);
+
+	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
 
 	// Run loop of the application
 	while (!glfwWindowShouldClose(window))
@@ -200,7 +196,7 @@ int main()
 		camera->processKeyboardMovement(deltaTime);
 
 		// Render stuff here
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Gray background
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -208,7 +204,7 @@ int main()
 		defaultShader.use();
 
 		// Make sure we have the correct WIDTH and HEIGHT
-		glfwGetFramebufferSize(window, &width, &height);
+		// glfwGetFramebufferSize(window, &width, &height);
 	
 		// Setup Projection Matrix
 		glm::mat4 projection;
@@ -218,36 +214,13 @@ int main()
 		// Setup View Matrix
 		glm::mat4 view = camera->getView();
 		defaultShader.setMat4("view", view);
-		defaultShader.setVec3("viewPos", camera->getPos());
+		// defaultShader.setVec3("viewPos", camera->getPos());
 
-		// Setup Material
-		defaultShader.setMaterial(materialManager->getMaterial("woodenCube"));
-		
-		defaultShader.setInt("numDirLights", lightManager->getMapSize(DIRECTIONAL_LIGHT));
-		std::shared_ptr<Light> light = lightManager->getLight(0, DIRECTIONAL_LIGHT);
-		std::shared_ptr<DirectionalLight> dirLight = std::dynamic_pointer_cast<DirectionalLight>(light);
-		defaultShader.setVec3("dirLights[0].direction", dirLight->direction);
-		defaultShader.setVec3("dirLights[0].ambient", dirLight->ambient);
-		defaultShader.setVec3("dirLights[0].diffuse", dirLight->diffuse);
-		defaultShader.setVec3("dirLights[0].specular", dirLight->specular);
-
-		// Render Multiple Cubes
-		for (int i = 0; i < positions.size(); i++)
-		{
-			cube.setPosition(positions[i]);
-			cube.setRotation(20.f * i, glm::vec3(1.0f, 0.3f, 0.5));
-			cube.draw(defaultShader);
-		}
-
-		lightingShader.use();
-
-		lightingShader.setMat4("projection", projection);
-		lightingShader.setMat4("view", view);
-		//lightingShader.setVec3("lightColour", pointLight.diffuse);
-
-		//sphere.setPosition(pointLight.position);
-		sphere.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
-		sphere.draw(lightingShader);
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		defaultShader.setMat4("model", model);
+		ourModel.draw(defaultShader);
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);
@@ -256,7 +229,6 @@ int main()
 
 	// Clean up
 	defaultShader.clear();
-	lightingShader.clear();
 
 	glfwDestroyWindow(window);
 	glfwTerminate(); 
