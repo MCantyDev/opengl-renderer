@@ -10,6 +10,7 @@
 #include "core/TextureManager.h"
 #include "core/MaterialManager.h"
 #include "core/LightManager.h"
+#include "core/AssimpLoader.h"
 
 // Meshes
 #include "mesh/Cube.h"
@@ -125,49 +126,43 @@ int main()
 	TextureManager* textureManager = TextureManager::GetInstance();
 	MaterialManager* materialManager = MaterialManager::GetInstance();
 	LightManager* lightManager = LightManager::GetInstance();
+	AssimpLoader assimpLoader;
 	
 	// Initialise
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 
 	// Setup the Shaders, both the Vertex and Fragment ones
-	Shader defaultShader("shaders/test.vert", "shaders/test.frag");
+	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
+	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
 
 	// Enable Depth Testing for Rendering the correct stuff based on Depth
 	glEnable(GL_DEPTH_TEST);
 
 	// Lets me draw cubes!
-	Cube cube;
-	Sphere sphere(0.3f, 50, 50);
+	//Cube cube;
+	//Sphere sphere(0.3f, 50, 50);
 
-	GLuint diff = textureManager->addTexture("wood", TEXTURE_DIFFUSE, "assets/woodenCube.png");
-	GLuint spec = textureManager->addTexture("wood", TEXTURE_SPECULAR, "assets/woodenCubeSpecular.png");
-	GLuint emission = textureManager->addTexture("matrix", TEXTURE_EMISSION, "assets/matrix.jpg");
-
-	// Activate Matrix Emission texture by change -1 to emission
-	materialManager->addMaterial(
-		"woodenCube", 
-		Material( diff, spec, -1, 64.0f) 
-	);
-	
 	lightManager->addLight(std::make_shared<DirectionalLight>
 	(
 		glm::vec3(-0.2f, -1.0f, -0.3f),
 		glm::vec3(0.0f),
 		glm::vec3(0.3f, 0.3f, 0.3f),
-		glm::vec3(0.06f, 0.06f, 0.6f)
+		glm::vec3(0.06f, 0.06f, 0.06f)
 	), DIRECTIONAL_LIGHT);
 
 	lightManager->addLight(std::make_shared<PointLight>
 	(
-		glm::vec3(1.2f, 1.0f, 2.0f),
-		glm::vec3(0.05f, 0.01f, 0.01f),
-		glm::vec3(0.3f, 0.3f, 0.3f),
+		glm::vec3(0.0f, 2.0f, 1.0f),
 		glm::vec3(0.1f, 0.1f, 0.1f),
-		1.0f, 0.14f, 0.07f
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(0.3f, 0.3f, 0.3f),
+		1.0f, 0.09f, 0.032f
 	), POINT_LIGHT);
 
-	Model ourModel("models/Backpack/backpack.obj");
-	std::vector<glm::vec3> positions = generateRandomPositions(50, -10.0, 10.0f);
+	Model backpack(assimpLoader.load("models/Backpack/backpack.obj", true));
+	Model robot(assimpLoader.load("models/Robot/robo.obj"));
+
+	Sphere sphere(0.3f, 20, 20);
 
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
 
@@ -199,7 +194,6 @@ int main()
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 		// Starting using the Texture Program and use the proper textures
 		defaultShader.use();
 
@@ -214,13 +208,43 @@ int main()
 		// Setup View Matrix
 		glm::mat4 view = camera->getView();
 		defaultShader.setMat4("view", view);
-		// defaultShader.setVec3("viewPos", camera->getPos());
+		 defaultShader.setVec3("viewPos", camera->getPos());
+
+		defaultShader.setInt("numDirLights", lightManager->getMapSize(DIRECTIONAL_LIGHT));
+		std::shared_ptr<Light> light = lightManager->getLight(0, DIRECTIONAL_LIGHT);
+		std::shared_ptr<DirectionalLight> dirLight = std::dynamic_pointer_cast<DirectionalLight>(light);
+		defaultShader.setVec3("dirLights[0].direction", dirLight->direction);
+		defaultShader.setVec3("dirLights[0].ambient", dirLight->ambient);
+		defaultShader.setVec3("dirLights[0].diffuse", dirLight->diffuse);
+		defaultShader.setVec3("dirLights[0].specular", dirLight->specular);
+
+		defaultShader.setInt("numPointLights", lightManager->getMapSize(POINT_LIGHT));
+		light = lightManager->getLight(0, POINT_LIGHT);
+		std::shared_ptr<PointLight> pointLight = std::dynamic_pointer_cast<PointLight>(light);
+		defaultShader.setVec3("pointLights[0].position", pointLight->position);
+		defaultShader.setVec3("pointLights[0].ambient", pointLight->ambient);
+		defaultShader.setVec3("pointLights[0].diffuse", pointLight->diffuse);
+		defaultShader.setVec3("pointLights[0].specular", pointLight->specular);
+		defaultShader.setFloat("pointLights[0].constant", pointLight->constant);
+		defaultShader.setFloat("pointLights[0].linear", pointLight->linear);
+		defaultShader.setFloat("pointLights[0].quadratic", pointLight->quadratic);
 
 		glm::mat4 model = glm::mat4(1.0f);
+		
 		model = glm::translate(model, glm::vec3(0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
+
 		defaultShader.setMat4("model", model);
-		ourModel.draw(defaultShader);
+		robot.draw(defaultShader);
+
+		lightingShader.use();
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
+		
+		sphere.setPosition(pointLight->position);
+		lightingShader.setVec3("lightColour", pointLight->diffuse);
+		sphere.draw(lightingShader);
+
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);

@@ -3,7 +3,7 @@
 Cube::Cube()
 {
 	vao.bind();
-	vbo = VBO(vertices.data(), (vertices.size() * sizeof(GLfloat)));
+	vbo = VBO(vertices);
 
 	linkToVAO(vbo);
 

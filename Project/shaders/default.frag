@@ -1,7 +1,7 @@
 #version 460 core
 
 // Output from Shader
-out vec4 FragColor;
+out vec4 FragColour;
 
 // Taking values from Vertex Shader
 in vec3 normal;
@@ -107,7 +107,7 @@ vec3 calcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 	{
 		ambient = light.ambient * vec3(texture(material.diffuse, textureCoords));
 		diffuse = light.diffuse * diff * vec3(texture(material.diffuse, textureCoords));
-		specular = light.specular * spec * vec3(texture(material.specular, textureCoords));
+		specular = light.specular * spec * vec3(texture(material.specular, textureCoords).r);
 	}
 	else
 	{
@@ -139,7 +139,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	{
 		ambient = light.ambient * vec3(texture(material.diffuse, textureCoords));
 		diffuse = light.diffuse * diff * vec3(texture(material.diffuse, textureCoords));
-		specular = light.specular * spec * vec3(texture(material.specular, textureCoords));
+		specular = light.specular * spec * vec3(texture(material.specular, textureCoords).r);
 	}
 	else
 	{
@@ -179,7 +179,7 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
         if (useTexture)
         {
             vec3 diffuseTex = vec3(texture(material.diffuse, textureCoords));
-            vec3 specularTex = vec3(texture(material.specular, textureCoords));
+            vec3 specularTex = vec3(texture(material.specular, textureCoords).r);
 
             ambient = light.ambient * diffuseTex;
             diffuse = light.diffuse * diff * diffuseTex;
@@ -224,5 +224,10 @@ void main()
 		result += calcSpotLight(spotLights[i], norm, fragPos, viewDir);
 	}
 
-	FragColor = vec4(result, 1.0);
+	if (useTexture)
+	{
+		result += texture(material.emission, textureCoords).rgb;
+	}
+
+	FragColour = vec4(result, 1.0);
 };

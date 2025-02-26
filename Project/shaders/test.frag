@@ -1,23 +1,50 @@
 #version 460 core
 
-in vec2 TexCoords;
-in vec3 FragPos;
-in vec3 Normal;
+// Output from Shader
+out vec4 FragColour;
 
-out vec4 FragColor;
+// Taking values from Vertex Shader
+in vec3 normal;
+in vec3 fragPos;
+in vec2 textureCoords;
 
-struct Material {
-    sampler2D texture_diffuse1;
-    sampler2D texture_specular1;
-    float shininess;
-};  
+// Structure for Base Material (An Object with no Texture)
+struct BaseMaterial
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
 
-uniform Material material;
+// Structure for Material (An Object with Texture)
+struct Material 
+{
+	BaseMaterial base; // Base Material so static values can be used
+
+	sampler2D diffuse; // Diffuse Map
+	sampler2D specular; // Specular Map
+	sampler2D emission; // Emission Map
+
+	float shininess;
+};
+
+uniform bool useTexture; 
+uniform Material material; // Material
 
 void main()
 {
-    vec4 diffuse = texture(material.texture_diffuse1, TexCoords);
-    vec4 specular = texture(material.texture_specular1, TexCoords);
+	vec3 diffuseColour;
+	vec3 specularColour;
+	vec3 emissionColour;
 
-    FragColor = diffuse;
-}
+	if (useTexture)
+	{
+		diffuseColour = texture(material.diffuse, textureCoords).rgb;
+		specularColour = texture(material.specular, textureCoords).rgb;
+		emissionColour = texture(material.emission, textureCoords).rgb;
+	}
+
+	vec3 result = (diffuseColour + specularColour + emissionColour);
+
+	FragColour = vec4(result, 1.0);
+};

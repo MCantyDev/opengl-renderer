@@ -46,7 +46,7 @@ public:
 	void setMat4(const std::string& name, const glm::mat4& mat);
 	
 	// Overloaded as sometimes i may not have a texture
-	void setMaterial(Material* material);
+	void setMaterial(std::shared_ptr<Material> material);
 
 	void setLight(const Light& light);
 	

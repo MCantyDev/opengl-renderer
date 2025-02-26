@@ -4,11 +4,11 @@ Sphere::Sphere(float r, int vd, int hd)
 {
 	vao.bind();
 	
-	std::vector<float> vertices = generateVertices(r, vd, hd);
+	std::vector<Vertex> vertices = generateVertices(r, vd, hd);
 	indices = generateIndices(vd, hd);
 
-	vbo = VBO(vertices.data(), vertices.size() * sizeof(float));
-	ebo = EBO(indices.data(), indices.size() * sizeof(GLuint));
+	vbo = VBO(vertices);
+	ebo = EBO(indices);
 
 	linkToVAO(vbo);
 
@@ -30,14 +30,16 @@ void Sphere::draw(Shader& s)
 }
 
 // How the Sphere is being created programmatically
-std::vector<float> Sphere::generateVertices(float r, int vd, int hd) // 0.3, 10, 10
+std::vector<Vertex> Sphere::generateVertices(float r, int vd, int hd) // 0.3, 10, 10
 {
-	std::vector<float> vertices;
+	std::vector<Vertex> vertices;
 
 	for (int i = 0; i <= vd; i++) // until i = 10 (11 times)
 	{
 		for (int j = 0; j <= hd; j++) // until j = 10 (11 times)  (11 * 11) = 121
 		{
+			Vertex vertex;
+
 			// Spherical Coordinates
 			float theta = j * (2 * M_PI / hd); // 1 * (2 * 3.14159 / 10) = 0.628318
 			float phi = i * (M_PI / vd); // 1 * (3.14159 / 10) = 0.314159
@@ -52,14 +54,11 @@ std::vector<float> Sphere::generateVertices(float r, int vd, int hd) // 0.3, 10,
 			float u = theta / (2 * M_PI);
 			float v = phi / M_PI;
 
-			vertices.push_back(x);
-			vertices.push_back(y);
-			vertices.push_back(z);
-			vertices.push_back(normalised.x);
-			vertices.push_back(normalised.y);
-			vertices.push_back(normalised.z);
-			vertices.push_back(u);
-			vertices.push_back(v);
+			vertex.position = glm::vec3(x, y, z);
+			vertex.normal = normalised;
+			vertex.textureCoords = glm::vec2(u, v);
+			
+			vertices.push_back(vertex);
 		}
 	}
 	return vertices;

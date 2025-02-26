@@ -1,0 +1,10 @@
+newmtl RoboMaterial
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+d 1.0
+illum 2
+map_Kd robo_diffuse.jpg
+map_Kn robo_normal.jpg
+map_Ks robo_specular.jpeg
+map_Ke robo_emission.jpeg

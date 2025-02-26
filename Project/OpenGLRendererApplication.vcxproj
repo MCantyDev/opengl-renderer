@@ -22,6 +22,7 @@
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
+    <ClCompile Include="src\core\AssimpLoader.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\LightManager.cpp" />
     <ClCompile Include="src\core\MaterialManager.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
+    <ClInclude Include="include\core\AssimpLoader.h" />
     <ClInclude Include="include\core\Camera.h" />
     <ClInclude Include="include\core\LightManager.h" />
     <ClInclude Include="include\core\MaterialManager.h" />
@@ -76,6 +78,7 @@
     <ClInclude Include="include\mesh\Cube.h" />
     <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />
+    <ClInclude Include="include\Structures.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

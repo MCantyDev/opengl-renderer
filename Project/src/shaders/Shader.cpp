@@ -187,7 +187,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 }
 
 // Simple Function to change the Material of the Object
-void Shader::setMaterial(Material* material)
+void Shader::setMaterial(std::shared_ptr<Material> material)
 {
 	if (material == nullptr)
 	{
@@ -214,6 +214,9 @@ void Shader::setMaterial(Material* material)
 
 		bind(material->specularTexture, 1);
 		setInt("material.specular", 1);
+
+		bind(material->emissionTexture, 2);
+		setInt("material.emission", 2);
 
 		setFloat("material.shininess", material->shininess);
 	}

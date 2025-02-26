@@ -16,7 +16,7 @@ public:
 
 	~MaterialManager();
 
-	Material* getMaterial(const char* materialName);
+	std::shared_ptr<Material> getMaterial(const char* materialName);
 
 	void addMaterial(const char* materialName, const Material& material);
 	void deleteMaterial(const char* materialName);

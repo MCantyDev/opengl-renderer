@@ -54,9 +54,9 @@ GLuint TextureManager::getTexture(const char* textureName, TextureType textureTy
 	return -1;
 }
 
-GLuint TextureManager::addTexture(const char* textureName, TextureType textureType, const char* texturePath)
+GLuint TextureManager::addTexture(const char* textureName, TextureType textureType, const char* texturePath, bool flipped)
 {
-	GLuint texture = loadTexture(texturePath);
+	GLuint texture = loadTexture(texturePath, flipped);
 
 	if (texture == -1)
 	{
@@ -85,11 +85,13 @@ void TextureManager::deleteTexture(const char* textureName, TextureType textureT
 	std::cout << "Functional: Removing " << getTextureTypeName(textureType) << " Texture from Texture Manager - Name: \"" << textureName << "\"" << std::endl;
 }
 
-GLuint TextureManager::loadTexture(const char* path)
+GLuint TextureManager::loadTexture(const char* path, bool flipped)
 {
 	GLuint ID;
 	glGenTextures(1, &ID);
 	int width, height, nrChannels;
+
+	stbi_set_flip_vertically_on_load(flipped);
 	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
 
 	if (data)

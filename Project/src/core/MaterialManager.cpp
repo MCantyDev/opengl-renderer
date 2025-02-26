@@ -37,13 +37,13 @@ void MaterialManager::DeleteInstance()
 	}
 }
 
-Material* MaterialManager::getMaterial(const char* materialName)
+std::shared_ptr<Material> MaterialManager::getMaterial(const char* materialName)
 {
 	auto it = materialMap.find(materialName);
 
 	if (it != materialMap.end())
 	{
-		return &it->second;
+		return std::make_shared<Material>(it->second);
 	}
 	return nullptr;
 }

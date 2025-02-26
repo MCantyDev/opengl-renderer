@@ -24,7 +24,7 @@ public:
 	~TextureManager();
 
 	GLuint getTexture(const char* textureName, TextureType textureType);
-	GLuint addTexture(const char* textureName, TextureType textureType, const char* texturePath);
+	GLuint addTexture(const char* textureName, TextureType textureType, const char* texturePath, bool flipped);
 
 	void deleteTexture(const char* textureName, TextureType textureType);
 
@@ -35,7 +35,7 @@ private:
 	// Map of Textures
 	std::unordered_map<TextureType, std::unordered_map<std::string, GLuint>> textureMap;
 
-	GLuint loadTexture(const char* path);
+	GLuint loadTexture(const char* path, bool flipped);
 	std::string getTextureTypeName(TextureType type);
 
 	TextureManager(const TextureManager&) = delete;

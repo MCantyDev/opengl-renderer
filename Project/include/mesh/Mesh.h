@@ -1,42 +1,42 @@
 #ifndef MESH_H
 #define MESH_H
 
+// OpenGL Include
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
+// Core Functionality Include
+#include "core/MaterialManager.h"
 #include "shaders/Shader.h"
 
+// Buffer Include
+#include "buffers/VAO.h"
+#include "buffers/VBO.h"
+#include "buffers/EBO.h"
+
+// Standard Library Include
 #include <string>
+#include <iostream>
 #include <vector>
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 textureCoords;
-};
-
-struct Text
-{
-	GLuint id;
-	std::string type;
-	std::string path;
-};
+#include "Structures.h"
 
 class Mesh
 {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
-	std::vector<Text> textures;
+	std::vector<GLuint> indices; // Indices need to be stored so glDrawElements can reference them
+	std::string materialName;
 
-	Mesh(std::vector<Vertex> v, std::vector<GLuint> i, std::vector<Text> t);
+	Mesh(std::vector<Vertex> v, std::vector<GLuint> i, std::string mName);
+
 	void draw(Shader& s);
 
 private:
-	GLuint VAO, VBO, EBO;
+	MaterialManager* materialManager = MaterialManager::GetInstance();
 
-	void setupMesh();
+	VAO vao;
+	VBO vbo;
+	EBO ebo; 
 };
 
 #endif // MESH_H

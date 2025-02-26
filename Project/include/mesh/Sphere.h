@@ -13,6 +13,8 @@
 
 #include "shaders/Shader.h"
 
+#include "Structures.h"
+
 #include <vector>
 #include <cmath>
 
@@ -68,7 +70,7 @@ private:
 
 	std::vector<GLuint> indices;
 
-	std::vector<float> generateVertices(float r, int vd, int hd);
+	std::vector<Vertex> generateVertices(float r, int vd, int hd);
 	std::vector<GLuint> generateIndices(int vd, int hd);
 };
 
