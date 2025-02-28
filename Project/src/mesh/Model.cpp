@@ -6,10 +6,14 @@ Model::Model(std::vector<Mesh> m)
 	std::cout << "Functional: Model Loaded Successfully" << std::endl;
 }
 
-void Model::draw(Shader& s)
+void Model::draw(Shader& s, ShaderType t)
 {
-	for (GLuint i = 0; i < meshes.size(); i++)
+	s.use();
+	updateMatrix();
+	s.setMat4("model", modelMatrix);
+
+	for (auto& mesh : meshes)
 	{
-		meshes[i].draw(s);
+		mesh.draw(s, t);
 	}
 }

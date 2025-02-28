@@ -55,11 +55,17 @@
     <Filter Include="Resource Files\shaders\lightShader">
       <UniqueIdentifier>{c4347861-48a6-4bf4-a1f5-026ceb58efe1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\mesh">
+    <Filter Include="Header Files\object">
       <UniqueIdentifier>{759f50ee-716e-4bfb-9b7f-5065d2fe3b8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\mesh">
+    <Filter Include="Source Files\object">
       <UniqueIdentifier>{9f74c1a4-2eab-4653-a161-936af900d499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\object\primitive">
+      <UniqueIdentifier>{66c37ead-b408-4109-82fb-2173ff30bfc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\object\primitive">
+      <UniqueIdentifier>{c501e822-af6b-46eb-b9fe-cdcdd6c9df58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,15 +86,6 @@
     </ClCompile>
     <ClCompile Include="src\Buffers\VBO.cpp">
       <Filter>Source Files\buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\Cube.cpp">
-      <Filter>Source Files\mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\Sphere.cpp">
-      <Filter>Source Files\mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\Primitive.cpp">
-      <Filter>Source Files\mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\stb_image.cpp">
       <Filter>Source Files</Filter>
@@ -127,13 +124,22 @@
       <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\Mesh.cpp">
-      <Filter>Source Files\mesh</Filter>
+      <Filter>Source Files\object</Filter>
     </ClCompile>
     <ClCompile Include="src\core\AssimpLoader.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\Model.cpp">
-      <Filter>Source Files\mesh</Filter>
+      <Filter>Source Files\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Primitive.cpp">
+      <Filter>Source Files\object\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Sphere.cpp">
+      <Filter>Source Files\object\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Cube.cpp">
+      <Filter>Source Files\object\primitive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,15 +184,6 @@
     <ClInclude Include="include\buffers\VBO.h">
       <Filter>Header Files\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="include\mesh\Cube.h">
-      <Filter>Header Files\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\Sphere.h">
-      <Filter>Header Files\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\Primitive.h">
-      <Filter>Header Files\mesh</Filter>
-    </ClInclude>
     <ClInclude Include="include\core\Camera.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -224,16 +221,25 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\mesh\Mesh.h">
-      <Filter>Header Files\mesh</Filter>
+      <Filter>Header Files\object</Filter>
     </ClInclude>
     <ClInclude Include="include\core\AssimpLoader.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="include\mesh\Object.h">
-      <Filter>Header Files\mesh</Filter>
+      <Filter>Header Files\object</Filter>
     </ClInclude>
     <ClInclude Include="include\mesh\Model.h">
-      <Filter>Header Files\mesh</Filter>
+      <Filter>Header Files\object</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Primitive.h">
+      <Filter>Header Files\object\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Sphere.h">
+      <Filter>Header Files\object\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mesh\Cube.h">
+      <Filter>Header Files\object\primitive</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -71,11 +71,11 @@
     <ClInclude Include="include\lighting\SpotLight.h" />
     <ClInclude Include="include\material\Base.h" />
     <ClInclude Include="include\material\Material.h" />
+    <ClInclude Include="include\mesh\Cube.h" />
     <ClInclude Include="include\mesh\Mesh.h" />
     <ClInclude Include="include\mesh\Model.h" />
     <ClInclude Include="include\mesh\Object.h" />
     <ClInclude Include="include\mesh\Primitive.h" />
-    <ClInclude Include="include\mesh\Cube.h" />
     <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />
     <ClInclude Include="include\Structures.h" />

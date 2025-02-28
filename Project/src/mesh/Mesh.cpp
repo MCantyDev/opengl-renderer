@@ -16,13 +16,13 @@ Mesh::Mesh(std::vector<Vertex> v, std::vector<GLuint> i, std::string mName)
 	ebo.unbind();
 }
 
-void Mesh::draw(Shader& s)
+void Mesh::draw(Shader& s, ShaderType t)
 {
 	vao.bind();
 	
 	std::shared_ptr<Material> material = materialManager->getMaterial(materialName.c_str());
 
-	s.setMaterial(material);
+	s.setMaterial(material, t);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	vao.unbind();
 }

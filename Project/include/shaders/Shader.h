@@ -15,6 +15,12 @@
 #include <sstream>
 #include <iostream>
 
+enum ShaderType
+{
+	SHADER_DEFAULT,
+	SHADER_LIGHTING
+};
+
 class Shader
 {
 public:
@@ -46,7 +52,7 @@ public:
 	void setMat4(const std::string& name, const glm::mat4& mat);
 	
 	// Overloaded as sometimes i may not have a texture
-	void setMaterial(std::shared_ptr<Material> material);
+	void setMaterial(std::shared_ptr<Material> material, ShaderType type);
 
 	void setLight(const Light& light);
 	

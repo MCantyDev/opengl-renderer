@@ -2,32 +2,25 @@
 #define PRIMITIVE_H
 
 #include "shaders/Shader.h"
-#include "buffers/VAO.h"
-#include "buffers/VBO.h"
 
+#include "mesh/Mesh.h"
 #include "mesh/Object.h"
 
 /*
 * @class Primitive
-* @brief Abstract class created for primitives that allows you to scale and draw the primitives as wanted. Gives a standard Virtual draw function to be created.
-* Primitive Class creates the VAO and modelMatrix of the Object as these 2 elements are able to be created without any identifiers
+* @brief Base class created for primitives that allows you to scale and draw the primitives as wanted. Gives a standard draw function to be created.
 */
-class Primitive
+class Primitive : public Object
 {
 public:
-	Primitive() = default;
+	Primitive();
 
-	void setPosition(glm::vec3 coordinates);
-	void setRotation(float angle, glm::vec3 axis);
-	void setScale(glm::vec3 scaler);
+	virtual void generateMesh() = 0; // Pure Virtual
 
-	virtual void draw(Shader& shader) = 0;
+	virtual void draw(Shader& s, ShaderType t = SHADER_DEFAULT) override;
 
 protected:
-	VAO vao;
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
-
-	void linkToVAO(VBO& vbo);
+	Mesh mesh;
 };
 
 #endif // PRIMITIVE

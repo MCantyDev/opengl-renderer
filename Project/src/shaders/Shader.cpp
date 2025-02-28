@@ -187,38 +187,45 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 }
 
 // Simple Function to change the Material of the Object
-void Shader::setMaterial(std::shared_ptr<Material> material)
+void Shader::setMaterial(std::shared_ptr<Material> material, ShaderType type)
 {
 	if (material == nullptr)
 	{
 		return;
 	}
-
-	if (!material->useTexture)
+	
+	if (type == SHADER_DEFAULT)
 	{
-		// If no textures was provided to use material
-		setBool("useTexture", false);
+		if (!material->useTexture)
+		{
+			// If no textures was provided to use material
+			setBool("useTexture", false);
 
-		setVec3("material.base.ambient", material->base.ambient);
-		setVec3("material.base.diffuse", material->base.diffuse);
-		setVec3("material.base.specular", material->base.specular);
+			setVec3("material.base.ambient", material->base.ambient);
+			setVec3("material.base.diffuse", material->base.diffuse);
+			setVec3("material.base.specular", material->base.specular);
 
-		setFloat("material.shininess", material->shininess);
+			setFloat("material.shininess", material->shininess);
+		}
+		else
+		{
+			setBool("useTexture", true);
+
+			bind(material->diffuseTexture, 0);
+			setInt("material.diffuse", 0);
+
+			bind(material->specularTexture, 1);
+			setInt("material.specular", 1);
+
+			bind(material->emissionTexture, 2);
+			setInt("material.emission", 2);
+
+			setFloat("material.shininess", material->shininess);
+		}
 	}
-	else
+	else if (type == SHADER_LIGHTING)
 	{
-		setBool("useTexture", true);
-
-		bind(material->diffuseTexture, 0);
-		setInt("material.diffuse", 0);
-
-		bind(material->specularTexture, 1);
-		setInt("material.specular", 1);
-
-		bind(material->emissionTexture, 2);
-		setInt("material.emission", 2);
-
-		setFloat("material.shininess", material->shininess);
+		setVec3("material.base.diffuse", material->base.diffuse);
 	}
 }
 

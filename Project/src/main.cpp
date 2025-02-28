@@ -130,6 +130,7 @@ int main()
 	
 	// Initialise
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
+	materialManager->addMaterial("default", Material(Base(glm::vec3(0.3f), glm::vec3(1.0f), glm::vec3(0.5f)), 32.0f));
 
 	// Setup the Shaders, both the Vertex and Fragment ones
 	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
@@ -162,7 +163,8 @@ int main()
 	Model backpack(assimpLoader.load("models/Backpack/backpack.obj", true));
 	Model robot(assimpLoader.load("models/Robot/robo.obj"));
 
-	Sphere sphere(0.3f, 20, 20);
+	Cube cube;
+	Sphere sphere(0.3f, 30, 30);
 
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
 
@@ -229,22 +231,16 @@ int main()
 		defaultShader.setFloat("pointLights[0].linear", pointLight->linear);
 		defaultShader.setFloat("pointLights[0].quadratic", pointLight->quadratic);
 
-		glm::mat4 model = glm::mat4(1.0f);
-		
-		model = glm::translate(model, glm::vec3(0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-
-		defaultShader.setMat4("model", model);
+		robot.setScale(glm::vec3(0.1f));
+		robot.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		robot.draw(defaultShader);
 
 		lightingShader.use();
 		lightingShader.setMat4("projection", projection);
 		lightingShader.setMat4("view", view);
-		
-		sphere.setPosition(pointLight->position);
-		lightingShader.setVec3("lightColour", pointLight->diffuse);
-		sphere.draw(lightingShader);
 
+		sphere.setPosition(pointLight->position);
+		sphere.draw(lightingShader, SHADER_LIGHTING);
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);

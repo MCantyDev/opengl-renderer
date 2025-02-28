@@ -1,32 +1,17 @@
 #include "mesh/Sphere.h"
 
 Sphere::Sphere(float r, int vd, int hd)
+	: radius(r), verticalDivisions(vd), horizonalDivisions(hd)
 {
-	vao.bind();
-	
-	std::vector<Vertex> vertices = generateVertices(r, vd, hd);
-	indices = generateIndices(vd, hd);
-
-	vbo = VBO(vertices);
-	ebo = EBO(indices);
-
-	linkToVAO(vbo);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
+	generateMesh();
 }
 
-void Sphere::draw(Shader& s)
+void Sphere::generateMesh()
 {
-	s.use();
-	s.setMat4("model", modelMatrix);
+	std::vector<Vertex> vertices = generateVertices(radius, verticalDivisions, horizonalDivisions);
+	std::vector<GLuint> indices = generateIndices(verticalDivisions, horizonalDivisions);
 
-	vao.bind();
-	ebo.bind();
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	vao.unbind();
-	ebo.unbind();
+	mesh = Mesh(vertices, indices, "default");
 }
 
 // How the Sphere is being created programmatically

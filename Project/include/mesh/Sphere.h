@@ -61,14 +61,12 @@ class Sphere : public Primitive
 {
 public:
 	Sphere(float r, int vd, int hd);
-
-	virtual void draw(Shader& s) override;
-
+	virtual void generateMesh() override;
 private:
-	VBO vbo;
-	EBO ebo;
 
-	std::vector<GLuint> indices;
+	float radius;
+	int verticalDivisions;
+	int horizonalDivisions;
 
 	std::vector<Vertex> generateVertices(float r, int vd, int hd);
 	std::vector<GLuint> generateIndices(int vd, int hd);

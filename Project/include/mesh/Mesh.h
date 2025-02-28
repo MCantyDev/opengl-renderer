@@ -27,9 +27,10 @@ public:
 	std::vector<GLuint> indices; // Indices need to be stored so glDrawElements can reference them
 	std::string materialName;
 
+	Mesh() = default; // Default Constrcutor
 	Mesh(std::vector<Vertex> v, std::vector<GLuint> i, std::string mName);
 
-	void draw(Shader& s);
+	void draw(Shader& s, ShaderType t);
 
 private:
 	MaterialManager* materialManager = MaterialManager::GetInstance();
