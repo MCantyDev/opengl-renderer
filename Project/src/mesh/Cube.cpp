@@ -1,6 +1,7 @@
 #include "mesh/Cube.h"
 
-Cube::Cube()
+Cube::Cube(int ID)
+	: Primitive(ID)
 {
 	generateMesh();
 }

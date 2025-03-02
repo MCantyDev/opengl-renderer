@@ -12,7 +12,7 @@ class MaterialManager
 {
 public:
 	static MaterialManager* GetInstance();
-	static void DeleteInstance();
+	static void DestroyInstance();
 
 	~MaterialManager();
 

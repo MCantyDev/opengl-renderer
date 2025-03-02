@@ -10,6 +10,7 @@
 #include "core/TextureManager.h"
 #include "core/MaterialManager.h"
 #include "core/LightManager.h"
+#include "core/ShaderManager.h"
 #include "core/AssimpLoader.h"
 
 // Meshes
@@ -28,26 +29,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 * Find - processInput(window) in while loop
 */
 void processInput(GLFWwindow* window);
-
-
-std::vector<glm::vec3> generateRandomPositions(int numPositions, float minValue, float maxValue) {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(minValue, maxValue);
-
-	std::vector<glm::vec3> positions;
-
-	positions.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
-	for (int i = 0; i < numPositions - 1; ++i) {
-		float x = dis(gen);
-		float y = dis(gen);
-		float z = dis(gen);
-
-		positions.push_back(glm::vec3(x, y, z));
-	}
-
-	return positions;
-}
 
 // Settings
 // ------------
@@ -84,10 +65,6 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	std::cout << "Setup: GLFW_OPENGL_PROFILE: Core Profile Selected" << std::endl;
 
-	// Get the Monitor for the Total Size
-	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
 	GLFWwindow* window = glfwCreateWindow(800, 600, WINDOW_NAME, nullptr, nullptr);
 	if (window == nullptr) // Check if Window was successfully created
@@ -96,11 +73,9 @@ int main()
 		glfwTerminate(); // Clean up glfw
 		return -1;
 	}
-	// glfwMaximizeWindow(window);
 	
 	int width = 800;
 	int height = 600;
-	// glfwGetFramebufferSize(window, &width, &height);
 	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << width <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << height << std::endl;
@@ -126,23 +101,17 @@ int main()
 	TextureManager* textureManager = TextureManager::GetInstance();
 	MaterialManager* materialManager = MaterialManager::GetInstance();
 	LightManager* lightManager = LightManager::GetInstance();
-	AssimpLoader assimpLoader;
+	ObjectManager* objectManager = ObjectManager::GetInstance();
+	ShaderManager* shaderManager = ShaderManager::GetInstance();
+
 	
 	// Initialise
+	AssimpLoader assimpLoader;
+	// Setup the Shaders, both the Vertex and Fragment ones
+	shaderManager->addShader("default", std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag"));
+	shaderManager->addShader("lighting", std::make_shared<Shader>("shaders/lighting.vert", "shaders/lighting.frag"));
 	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
 	materialManager->addMaterial("default", Material(Base(glm::vec3(0.3f), glm::vec3(1.0f), glm::vec3(0.5f)), 32.0f));
-
-	// Setup the Shaders, both the Vertex and Fragment ones
-	Shader defaultShader("shaders/default.vert", "shaders/default.frag");
-	Shader lightingShader("shaders/lighting.vert", "shaders/lighting.frag");
-
-	// Enable Depth Testing for Rendering the correct stuff based on Depth
-	glEnable(GL_DEPTH_TEST);
-
-	// Lets me draw cubes!
-	//Cube cube;
-	//Sphere sphere(0.3f, 50, 50);
-
 	lightManager->addLight(std::make_shared<DirectionalLight>
 	(
 		glm::vec3(-0.2f, -1.0f, -0.3f),
@@ -150,7 +119,6 @@ int main()
 		glm::vec3(0.3f, 0.3f, 0.3f),
 		glm::vec3(0.06f, 0.06f, 0.06f)
 	), DIRECTIONAL_LIGHT);
-
 	lightManager->addLight(std::make_shared<PointLight>
 	(
 		glm::vec3(0.0f, 2.0f, 1.0f),
@@ -159,16 +127,11 @@ int main()
 		glm::vec3(0.3f, 0.3f, 0.3f),
 		1.0f, 0.09f, 0.032f
 	), POINT_LIGHT);
+	objectManager->addObject(std::make_shared<Model>(0, assimpLoader.load("models/Robot/robo.obj")), BASE_OBJECT);
+	objectManager->addObject(std::make_shared<Model>(1, assimpLoader.load("models/Backpack/backpack.obj", true)), BASE_OBJECT);
 
-	Model backpack(assimpLoader.load("models/Backpack/backpack.obj", true));
-	Model robot(assimpLoader.load("models/Robot/robo.obj"));
-
-	Cube cube;
-	Sphere sphere(0.3f, 30, 30);
-
+	glEnable(GL_DEPTH_TEST);
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
-
-	// Run loop of the application
 	while (!glfwWindowShouldClose(window))
 	{
 		// Show FPS in title
@@ -193,63 +156,35 @@ int main()
 		camera->processKeyboardMovement(deltaTime);
 
 		// Render stuff here
-		glClearColor(0.15f, 0.15f, 0.15f, 1.0f); // Gray background
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Starting using the Texture Program and use the proper textures
-		defaultShader.use();
-
-		// Make sure we have the correct WIDTH and HEIGHT
-		// glfwGetFramebufferSize(window, &width, &height);
-	
-		// Setup Projection Matrix
-		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(camera->getFov()), (float)(width / height), 0.1f, 100.0f);
-		defaultShader.setMat4("projection", projection);
-
-		// Setup View Matrix
+		glm::mat4 projection = glm::perspective(glm::radians(camera->getFov()), (float)(width / height), 0.1f, 100.0f);
 		glm::mat4 view = camera->getView();
-		defaultShader.setMat4("view", view);
-		 defaultShader.setVec3("viewPos", camera->getPos());
 
-		defaultShader.setInt("numDirLights", lightManager->getMapSize(DIRECTIONAL_LIGHT));
-		std::shared_ptr<Light> light = lightManager->getLight(0, DIRECTIONAL_LIGHT);
-		std::shared_ptr<DirectionalLight> dirLight = std::dynamic_pointer_cast<DirectionalLight>(light);
-		defaultShader.setVec3("dirLights[0].direction", dirLight->direction);
-		defaultShader.setVec3("dirLights[0].ambient", dirLight->ambient);
-		defaultShader.setVec3("dirLights[0].diffuse", dirLight->diffuse);
-		defaultShader.setVec3("dirLights[0].specular", dirLight->specular);
+		shaderManager->setupShaderMatrices("default", projection, view);
+		shaderManager->setupShaderMatrices("lighting", projection, view);
 
-		defaultShader.setInt("numPointLights", lightManager->getMapSize(POINT_LIGHT));
-		light = lightManager->getLight(0, POINT_LIGHT);
-		std::shared_ptr<PointLight> pointLight = std::dynamic_pointer_cast<PointLight>(light);
-		defaultShader.setVec3("pointLights[0].position", pointLight->position);
-		defaultShader.setVec3("pointLights[0].ambient", pointLight->ambient);
-		defaultShader.setVec3("pointLights[0].diffuse", pointLight->diffuse);
-		defaultShader.setVec3("pointLights[0].specular", pointLight->specular);
-		defaultShader.setFloat("pointLights[0].constant", pointLight->constant);
-		defaultShader.setFloat("pointLights[0].linear", pointLight->linear);
-		defaultShader.setFloat("pointLights[0].quadratic", pointLight->quadratic);
+		shaderManager->setupShaderUniforms("default", { {"viewPos", camera->getPos()} });
+		shaderManager->setupLighting("default");
 
-		robot.setScale(glm::vec3(0.1f));
-		robot.setRotation(glfwGetTime() * 50.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		robot.draw(defaultShader);
+		std::shared_ptr<Object> object = objectManager->getObject(0, BASE_OBJECT);
+		std::shared_ptr<Model> robot = std::dynamic_pointer_cast<Model>(object);
+		robot->setScale(glm::vec3(0.5f));
+		robot->setPosition(glm::vec3(3.0f));
 
-		lightingShader.use();
-		lightingShader.setMat4("projection", projection);
-		lightingShader.setMat4("view", view);
-
-		sphere.setPosition(pointLight->position);
-		sphere.draw(lightingShader, SHADER_LIGHTING);
+		objectManager->renderObjects(shaderManager->getShader("default"), shaderManager->getShader("lighting"));
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	// Clean up
-	defaultShader.clear();
-
+	camera->DestroyInstance();
+	textureManager->DestroyInstance();
+	materialManager->DestroyInstance();
+	lightManager->DestroyInstance();
+	objectManager->DestroyInstance();
 	glfwDestroyWindow(window);
 	glfwTerminate(); 
 

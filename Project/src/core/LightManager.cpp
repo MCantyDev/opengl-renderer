@@ -3,19 +3,14 @@
 LightManager* LightManager::instance = nullptr;
 
 LightManager::LightManager()
-	: nextDirectionalID(0), nextPointID(0), nextSpotID(0), numLights(0)
+	: nextDirectionalID(0), nextPointID(0), nextSpotID(0)
 {
 	std::cout << "Setup: Light Manager created" << std::endl;
 }
 
 LightManager::~LightManager()
 {
-	if (instance)
-	{
-		delete instance;
-		instance = nullptr;
-		std::cout << "Closing Light Manager destroyed" << std::endl;
-	}
+	std::cout << "Closing Light Manager destroyed" << std::endl;
 }
 
 LightManager* LightManager::GetInstance()
@@ -27,37 +22,52 @@ LightManager* LightManager::GetInstance()
 	return instance;
 }
 
-void LightManager::DeleteInstance()
+void LightManager::DestroyInstance()
 {
 	if (instance)
 	{
 		delete instance;
 		instance = nullptr;
-		std::cout << "Closing Light Manager destroyed" << std::endl;
 	}
 }
 
-void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
+void LightManager::addLight(LightVariant light, LightType lightType)
 {
 	if (lightType == DIRECTIONAL_LIGHT)
 	{
+		if (lightMap[DIRECTIONAL_LIGHT].size() == directionalLimit)
+		{
+			std::cout << "Functional Error: Failed to add Directional Light to Light Manager - " << lightMap[DIRECTIONAL_LIGHT].size() << "/" << directionalLimit << " Spots used" << std::endl;
+			return;
+		}
 		lightMap[lightType][nextDirectionalID] = light;
+		std::cout << "Functional: Adding Directional Light to Light Manager - " << lightMap[DIRECTIONAL_LIGHT].size() << " / " << directionalLimit << " Spots used" << std::endl;
 		nextDirectionalID++;
 	}
 
 	if (lightType == POINT_LIGHT)
 	{
+		if (lightMap[POINT_LIGHT].size() == pointLimit)
+		{
+			std::cout << "Functional Error: Failed to add Point Light to Light Manager - " << lightMap[POINT_LIGHT].size() << "/" << pointLimit << " Spots used" << std::endl;
+			return;
+		}
 		lightMap[lightType][nextPointID] = light;
+		std::cout << "Functional: Adding Point Light to Light Manager - " << lightMap[POINT_LIGHT].size() << " / " << pointLimit << " Spots used" << std::endl;
 		nextPointID++;
 	}
 	
 	if (lightType == SPOT_LIGHT)
 	{
+		if (lightMap[SPOT_LIGHT].size() == spotLimit)
+		{
+			std::cout << "Functional Error: Failed to add Spot Light to Light Manager - " << lightMap[SPOT_LIGHT].size() << "/" << spotLimit << " Spots used" << std::endl;
+			return;
+		}
 		lightMap[lightType][nextSpotID] = light;
+		std::cout << "Functional: Adding Spot Light to Light Manager - " << lightMap[SPOT_LIGHT].size() << " / " << spotLimit << " Spots used" << std::endl;
 		nextSpotID++;
 	}
-	numLights++;
-	std::cout << "Functional: Adding " << getLightTypeName(lightType) << " to Light Manager" << std::endl;
 }
 
 void LightManager::deleteLight(int lightID, LightType lightType)
@@ -71,25 +81,43 @@ void LightManager::deleteLight(int lightID, LightType lightType)
 		if (innerMap.empty())
 		{
 			lightMap.erase(lightType);
-			numLights--;
 		}
 		std::cout << "Functional: Removing " << getLightTypeName(lightType) << " from Light Manager - " << getLightTypeName(lightType) << " ID: \"" << lightID << "\"" << std::endl;
 	}
 }
 
-std::shared_ptr<Light> LightManager::getLight(int lightID, LightType lightType)
+std::shared_ptr<DirectionalLight> LightManager::getDirectionalLight(int id)
 {
-	auto typeIt = lightMap.find(lightType);
+	auto innerMap = lightMap[DIRECTIONAL_LIGHT];
 
-	if (typeIt != lightMap.end())
+	auto it = innerMap.find(id);
+	if (it != innerMap.end())
 	{
-		auto innerMap = typeIt->second;
-		auto it = innerMap.find(lightID);
+		return std::get<std::shared_ptr<DirectionalLight>>(it->second);
+	}
+	return nullptr;
+}
 
-		if (it != innerMap.end())
-		{
-			return it->second;
-		}
+std::shared_ptr<PointLight> LightManager::getPointLight(int id)
+{
+	auto innerMap = lightMap[POINT_LIGHT];
+	
+	auto it = innerMap.find(id);
+	if (it != innerMap.end())
+	{
+		return std::get<std::shared_ptr<PointLight>>(it->second);
+	}
+	return nullptr;
+}
+
+std::shared_ptr<SpotLight> LightManager::getSpotLight(int id)
+{
+	auto innerMap = lightMap[SPOT_LIGHT];
+
+	auto it = innerMap.find(id);
+	if (it != innerMap.end())
+	{
+		return std::get<std::shared_ptr<SpotLight>>(it->second);
 	}
 	return nullptr;
 }

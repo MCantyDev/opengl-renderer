@@ -13,11 +13,11 @@
 class Primitive : public Object
 {
 public:
-	Primitive();
+	Primitive(int ID);
 
 	virtual void generateMesh() = 0; // Pure Virtual
 
-	virtual void draw(Shader& s, ShaderType t = SHADER_DEFAULT) override;
+	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) override;
 
 protected:
 	Mesh mesh;

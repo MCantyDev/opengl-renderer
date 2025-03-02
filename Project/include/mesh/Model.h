@@ -12,9 +12,9 @@
 class Model : public Object
 {
 public:
-	Model(std::vector<Mesh> m);
+	Model(int ID, std::vector<Mesh> m);
 
-	virtual void draw(Shader& s, ShaderType t = SHADER_DEFAULT) override;
+	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) override;
 
 private:
 	std::vector<Mesh> meshes;

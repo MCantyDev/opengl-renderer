@@ -141,6 +141,9 @@
     <ClCompile Include="src\mesh\Cube.cpp">
       <Filter>Source Files\object\primitive</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\ShaderManager.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -240,6 +243,9 @@
     </ClInclude>
     <ClInclude Include="include\mesh\Cube.h">
       <Filter>Header Files\object\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\ShaderManager.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

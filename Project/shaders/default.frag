@@ -8,7 +8,7 @@ in vec3 normal;
 in vec3 fragPos;
 in vec2 textureCoords;
 
-#define MAX_DIRECTIONAL 10
+#define MAX_DIRECTIONAL 5
 #define MAX_POINTLIGHT 20
 #define MAX_SPOTLIGHT 20
 

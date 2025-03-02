@@ -12,20 +12,15 @@ Camera::Camera()
 // Destructor
 Camera::~Camera()
 {
-	if (instance)
-	{
-		delete instance;
-		instance = nullptr;
-		std::cout << "Closing: Camera destroyed" << std::endl;
-	}
+	std::cout << "Closing: Camera destroyed" << std::endl;
 }
+
 void Camera::DestroyInstance()
 {
 	if (instance)
 	{
 		delete instance;
 		instance = nullptr;
-		std::cout << "Process: Camera destroyed" << std::endl;
 	}
 }
 

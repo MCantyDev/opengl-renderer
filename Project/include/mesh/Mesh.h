@@ -30,7 +30,7 @@ public:
 	Mesh() = default; // Default Constrcutor
 	Mesh(std::vector<Vertex> v, std::vector<GLuint> i, std::string mName);
 
-	void draw(Shader& s, ShaderType t);
+	void draw(std::shared_ptr<Shader> s, ShaderType t);
 
 private:
 	MaterialManager* materialManager = MaterialManager::GetInstance();

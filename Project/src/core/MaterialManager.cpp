@@ -10,12 +10,7 @@ MaterialManager::MaterialManager()
 
 MaterialManager::~MaterialManager()
 {
-	if (instance)
-	{
-		delete instance;
-		instance = nullptr;
-		std::cout << "Closing: Material Manager destroyed" << std::endl;
-	}
+	std::cout << "Closing: Material Manager destroyed" << std::endl;
 }
 
 MaterialManager* MaterialManager::GetInstance()
@@ -27,13 +22,12 @@ MaterialManager* MaterialManager::GetInstance()
 	return instance;
 }
 
-void MaterialManager::DeleteInstance()
+void MaterialManager::DestroyInstance()
 {
 	if (instance)
 	{
 		delete instance;
 		instance = nullptr;
-		std::cout << "Closing: Material Manager destroyed" << std::endl;
 	}
 }
 

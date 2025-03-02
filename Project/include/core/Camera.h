@@ -85,6 +85,9 @@ private:
 	Camera();
 	static Camera* instance; // Static Instance of Camera for Singleton Pattern
 
+	Camera(const Camera&) = delete;
+	Camera& operator=(const Camera&) = delete;
+
 	/*
 	* @brief Runs the processMouseMovement Function
 	*/

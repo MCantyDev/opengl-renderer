@@ -12,13 +12,15 @@ struct BaseMaterial
 struct Material 
 {
 	BaseMaterial base;
-	float shininess;
 };
 
 uniform Material material;
-uniform bool useTexture;
 
 void main()
 {
-    FragColor = vec4(material.base.diffuse, 1.0);
+	vec3 result;
+
+	result += material.base.diffuse;
+
+    FragColor = vec4(result, 1.0);
 };

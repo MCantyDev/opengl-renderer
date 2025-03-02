@@ -27,6 +27,7 @@
     <ClCompile Include="src\core\LightManager.cpp" />
     <ClCompile Include="src\core\MaterialManager.cpp" />
     <ClCompile Include="src\core\ObjectManager.cpp" />
+    <ClCompile Include="src\core\ShaderManager.cpp" />
     <ClCompile Include="src\core\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\lighting\DirectionalLight.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="include\core\LightManager.h" />
     <ClInclude Include="include\core\MaterialManager.h" />
     <ClInclude Include="include\core\ObjectManager.h" />
+    <ClInclude Include="include\core\ShaderManager.h" />
     <ClInclude Include="include\core\TextureManager.h" />
     <ClInclude Include="include\lighting\DirectionalLight.h" />
     <ClInclude Include="include\lighting\Light.h" />
@@ -162,6 +164,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,6 +180,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -192,6 +196,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -207,6 +212,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

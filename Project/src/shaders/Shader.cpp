@@ -67,7 +67,7 @@ GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
 	if (!success)
 	{
 		glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-		std::cerr << "Error: Failed to compile shader program\nMore Information: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to compile shader program\nMore Information: \n" << infoLog << std::endl;
 	}
 	std::cout << "Setup: Successfully compiled shader" << std::endl;
 
@@ -89,7 +89,7 @@ GLuint Shader::createProgram(GLuint vertexShader, GLuint fragmentShader)
 	if (!success)
 	{
 		glGetProgramInfoLog(programID, 512, NULL, infoLog);
-		std::cerr << "Error: Failed to link shader program\nMore Information: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to link shader program\nMore Information: \n" << infoLog << std::endl;
 	}
 	else
 	{

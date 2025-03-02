@@ -10,12 +10,7 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-	if (instance)
-	{
-		delete instance;
-		instance = nullptr;
-		std::cout << "Closing: Texture Manager destroyed" << std::endl;
-	}
+	std::cout << "Closing: Texture Manager destroyed" << std::endl;
 }
 
 TextureManager* TextureManager::GetInstance()
@@ -27,13 +22,12 @@ TextureManager* TextureManager::GetInstance()
 	return instance;
 }
 
-void TextureManager::DeleteInstance()
+void TextureManager::DestroyInstance()
 {
 	if (instance)
 	{
 		delete instance;
 		instance = nullptr;
-		std::cout << "Closing: Texture Manager destroyed" << std::endl;
 	}
 }
 

@@ -1,16 +1,16 @@
 #include "mesh/Model.h"
 
-Model::Model(std::vector<Mesh> m)
-	: meshes(m)
+Model::Model(int ID, std::vector<Mesh> m)
+	: Object(ID), meshes(m)
 {
 	std::cout << "Functional: Model Loaded Successfully" << std::endl;
 }
 
-void Model::draw(Shader& s, ShaderType t)
+void Model::draw(std::shared_ptr<Shader> s, ShaderType t)
 {
-	s.use();
+	s->use();
 	updateMatrix();
-	s.setMat4("model", modelMatrix);
+	s->setMat4("model", modelMatrix);
 
 	for (auto& mesh : meshes)
 	{

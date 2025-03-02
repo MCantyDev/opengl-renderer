@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <memory>
+#include <variant>
 
 enum LightType
 {
@@ -16,32 +17,44 @@ enum LightType
 	SPOT_LIGHT
 };
 
+using LightVariant = std::variant<
+	std::shared_ptr<DirectionalLight>, std::shared_ptr<PointLight>, std::shared_ptr<SpotLight>>;
+
 class LightManager
 {
 public:
 	static LightManager* GetInstance();
-	static void DeleteInstance();
+	static void DestroyInstance();
 
 	~LightManager();
 
-	void addLight(std::shared_ptr<Light> light, LightType lightType);
-	void deleteLight(int lightID, LightType lightType);
+	void addLight(LightVariant light, LightType lightType);
+	void deleteLight(int id, LightType lightType);
 
-	std::shared_ptr<Light> getLight(int lightID, LightType lightType);
+	std::shared_ptr<DirectionalLight> getDirectionalLight(int id);
+	std::shared_ptr<PointLight> getPointLight(int id);
+	std::shared_ptr<SpotLight> getSpotLight(int id);
+
 	int getMapSize(LightType lightType);
 
 private:
 	LightManager();
 	static LightManager* instance;
 
+	LightManager(const LightManager&) = delete;
+	LightManager& operator=(const LightManager&) = delete;
+
 	// Map IDs
 	int nextDirectionalID;
 	int nextPointID;
 	int nextSpotID;
-	// Total Number of Lights
-	int numLights;
 
-	std::unordered_map<LightType, std::unordered_map<int, std::shared_ptr<Light>>> lightMap;
+	// Max Lights per Type
+	int directionalLimit = 5;
+	int pointLimit = 20;
+	int spotLimit = 20;
+
+	std::unordered_map<LightType, std::unordered_map<int, LightVariant>> lightMap;
 
 	std::string getLightTypeName(LightType type);
 };

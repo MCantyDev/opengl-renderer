@@ -9,7 +9,7 @@
 class Cube : public Primitive
 {
 public:
-    Cube();
+    Cube(int ID);
     virtual void generateMesh() override;
 
 private:

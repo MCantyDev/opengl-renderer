@@ -1,13 +1,14 @@
 #include "mesh/Primitive.h"
 
-Primitive::Primitive()
+Primitive::Primitive(int ID)
+	: Object(ID)
 {
 }
 
-void Primitive::draw(Shader& s, ShaderType t)
+void Primitive::draw(std::shared_ptr<Shader> s, ShaderType t)
 {
-	s.use();
+	s->use();
 	updateMatrix();
-	s.setMat4("model", modelMatrix);
+	s->setMat4("model", modelMatrix);
 	mesh.draw(s, t);
 }

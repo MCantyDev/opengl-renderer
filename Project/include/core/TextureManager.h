@@ -19,7 +19,7 @@ class TextureManager
 {
 public:
 	static TextureManager* GetInstance();
-	static void DeleteInstance();
+	static void DestroyInstance();
 
 	~TextureManager();
 
