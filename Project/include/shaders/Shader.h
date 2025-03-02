@@ -7,10 +7,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "material/Material.h"
+#include "lighting/Light.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+enum ShaderType
+{
+	SHADER_DEFAULT,
+	SHADER_LIGHTING
+};
 
 class Shader
 {
@@ -36,12 +45,16 @@ public:
 	void setFloat(const std::string& name, float v1, float v2, float v3);
 	void setFloat(const std::string& name, float v1, float v2, float v3, float v4);
 
- 	void setFloat(const std::string& name, const glm::vec2& value);
-	void setFloat(const std::string& name, const glm::vec3& value);
-	void setFloat(const std::string& name, const glm::vec4& value);
+ 	void setVec2(const std::string& name, const glm::vec2& value);
+	void setVec3(const std::string& name, const glm::vec3& value);
+	void setVec4(const std::string& name, const glm::vec4& value);
 	
-	// Set Matrices in Uniform
 	void setMat4(const std::string& name, const glm::mat4& mat);
+	
+	// Overloaded as sometimes i may not have a texture
+	void setMaterial(std::shared_ptr<Material> material, ShaderType type);
+
+	void setLight(const Light& light);
 	
 	GLuint getID();
 
@@ -52,6 +65,7 @@ private:
 	GLuint compileShader(const char* shaderCode, GLenum shaderType);
 	GLuint createProgram(GLuint vertexShader, GLuint fragmentShader);
 	GLuint getLocation(const std::string& name);
+	void bind(GLuint texture, GLuint textureID);
 };
 
 #endif // SHADER_H

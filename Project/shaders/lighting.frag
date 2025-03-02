@@ -2,9 +2,25 @@
 
 out vec4 FragColor;
 
-uniform vec3 lightColour;
+in vec2 textureCoords;
+
+struct BaseMaterial
+{
+	vec3 diffuse;
+};
+
+struct Material 
+{
+	BaseMaterial base;
+};
+
+uniform Material material;
 
 void main()
 {
-	FragColor =  vec4(lightColour, 1.0);
+	vec3 result;
+
+	result += material.base.diffuse;
+
+    FragColor = vec4(result, 1.0);
 };

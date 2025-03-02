@@ -13,6 +13,8 @@
 
 #include "shaders/Shader.h"
 
+#include "Structures.h"
+
 #include <vector>
 #include <cmath>
 
@@ -52,23 +54,21 @@ Indices:
 -------
 Indices are quite important when creating spherical geometry as unlike a cube which only has 36 vertices, spherical geometry grows INCREDIBLY fast. 
 For example a (1.0f, 50, 50) sphere would have 2601 vertices (Formula is (sectors + 1) * (stacks + 1) or (50 + 1) * (50 + 1) = 2601)
-*/
+*/  
 
 /* @class Sphere */
 class Sphere : public Primitive
 {
 public:
-	Sphere(float r, int vd, int hd);
-
-	virtual void draw(Shader& s) override;
-
+	Sphere(int ID, float r, int vd, int hd);
+	virtual void generateMesh() override;
 private:
-	VBO vbo;
-	EBO ebo;
 
-	std::vector<GLuint> indices;
+	float radius;
+	int verticalDivisions;
+	int horizonalDivisions;
 
-	std::vector<float> generateVertices(float r, int vd, int hd);
+	std::vector<Vertex> generateVertices(float r, int vd, int hd);
 	std::vector<GLuint> generateIndices(int vd, int hd);
 };
 

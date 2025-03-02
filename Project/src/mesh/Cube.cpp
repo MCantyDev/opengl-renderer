@@ -1,22 +1,12 @@
 #include "mesh/Cube.h"
 
-Cube::Cube()
+Cube::Cube(int ID)
+	: Primitive(ID)
 {
-	vao.bind();
-	vbo = VBO(vertices.data(), (vertices.size() * sizeof(GLfloat)));
-
-	linkToVAO(vbo);
-
-	vao.unbind();
-	vbo.unbind();
+	generateMesh();
 }
 
-void Cube::draw(Shader& s)
+void Cube::generateMesh()
 {
-	s.use();
-	s.setMat4("model", modelMatrix);
-
-	vao.bind();
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	vao.unbind();
+	mesh = Mesh(vertices, indices, "default");
 }

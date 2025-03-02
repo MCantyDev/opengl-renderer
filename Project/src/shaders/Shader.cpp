@@ -33,24 +33,24 @@ GLuint Shader::getID()
 
 std::string Shader::getFileContents(const char* filename)
 {
-    std::string shaderCode;
-    std::ifstream shaderFile;
-    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try
-    {
-        shaderFile.open(filename);
-        std::stringstream shaderStream;
-        shaderStream << shaderFile.rdbuf();
-        shaderFile.close();
-        shaderCode = shaderStream.str();
+	std::string shaderCode;
+	std::ifstream shaderFile;
+	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
+	{
+		shaderFile.open(filename);
+		std::stringstream shaderStream;
+		shaderStream << shaderFile.rdbuf();
+		shaderFile.close();
+		shaderCode = shaderStream.str();
 		std::cout << "Setup: Successfully read shader file: " << filename << std::endl;
-    } 
-    catch (std::ifstream::failure e)
-    {
-        std::cerr << "Error: Failed to read shader file: " << filename << std::endl;
-    }
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cerr << "Error: Failed to read shader file: " << filename << std::endl;
+	}
 
-    return shaderCode.c_str();
+	return shaderCode.c_str();
 }
 
 GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
@@ -67,9 +67,9 @@ GLuint Shader::compileShader(const char* shaderCode, GLenum shaderType)
 	if (!success)
 	{
 		glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-		std::cerr << "Error: Failed to compile shader program\nMore Information: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to compile shader program\nMore Information: \n" << infoLog << std::endl;
 	}
-	std::cout << "Setup: Successfully compiled shader program" << std::endl;
+	std::cout << "Setup: Successfully compiled shader" << std::endl;
 
 	return shaderID;
 }
@@ -89,7 +89,7 @@ GLuint Shader::createProgram(GLuint vertexShader, GLuint fragmentShader)
 	if (!success)
 	{
 		glGetProgramInfoLog(programID, 512, NULL, infoLog);
-		std::cerr << "Error: Failed to link shader program\nMore Information: " << infoLog << std::endl;
+		std::cerr << "Error: Failed to link shader program\nMore Information: \n" << infoLog << std::endl;
 	}
 	else
 	{
@@ -167,15 +167,15 @@ void Shader::setFloat(const std::string& name, float v1, float v2, float v3, flo
 }
 
 // Functions which are using GLM Vectors instead of just standard floats
-void Shader::setFloat(const std::string& name, const glm::vec2& value)
+void Shader::setVec2(const std::string& name, const glm::vec2& value)
 {
 	glUniform2f(getLocation(name), value.x, value.y);
 }
-void Shader::setFloat(const std::string& name, const glm::vec3& value)
+void Shader::setVec3(const std::string& name, const glm::vec3& value)
 {
 	glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
-void Shader::setFloat(const std::string& name, const glm::vec4& value)
+void Shader::setVec4(const std::string& name, const glm::vec4& value)
 {
 	glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
 }
@@ -184,4 +184,61 @@ void Shader::setFloat(const std::string& name, const glm::vec4& value)
 void Shader::setMat4(const std::string& name, const glm::mat4& mat)
 {
 	glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+// Simple Function to change the Material of the Object
+void Shader::setMaterial(std::shared_ptr<Material> material, ShaderType type)
+{
+	if (material == nullptr)
+	{
+		return;
+	}
+	
+	if (type == SHADER_DEFAULT)
+	{
+		if (!material->useTexture)
+		{
+			// If no textures was provided to use material
+			setBool("useTexture", false);
+
+			setVec3("material.base.ambient", material->base.ambient);
+			setVec3("material.base.diffuse", material->base.diffuse);
+			setVec3("material.base.specular", material->base.specular);
+
+			setFloat("material.shininess", material->shininess);
+		}
+		else
+		{
+			setBool("useTexture", true);
+
+			bind(material->diffuseTexture, 0);
+			setInt("material.diffuse", 0);
+
+			bind(material->specularTexture, 1);
+			setInt("material.specular", 1);
+
+			bind(material->emissionTexture, 2);
+			setInt("material.emission", 2);
+
+			setFloat("material.shininess", material->shininess);
+		}
+	}
+	else if (type == SHADER_LIGHTING)
+	{
+		setVec3("material.base.diffuse", material->base.diffuse);
+	}
+}
+
+void Shader::bind(GLuint texture, GLuint textureID)
+{
+	glActiveTexture(GL_TEXTURE0 + textureID);
+	glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+void Shader::setLight(const Light& light)
+{
+//	setVec3("light.position", light.position);
+	setVec3("light.ambient", light.ambient);
+	setVec3("light.diffuse", light.diffuse);
+	setVec3("light.specular", light.specular);
 }

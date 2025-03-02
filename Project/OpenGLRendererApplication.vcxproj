@@ -19,35 +19,68 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
+    <ClCompile Include="src\core\AssimpLoader.cpp" />
+    <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\core\LightManager.cpp" />
+    <ClCompile Include="src\core\MaterialManager.cpp" />
+    <ClCompile Include="src\core\ObjectManager.cpp" />
+    <ClCompile Include="src\core\ShaderManager.cpp" />
+    <ClCompile Include="src\core\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\lighting\DirectionalLight.cpp" />
+    <ClCompile Include="src\lighting\Light.cpp" />
+    <ClCompile Include="src\lighting\PointLight.cpp" />
+    <ClCompile Include="src\lighting\SpotLight.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\material\Base.cpp" />
+    <ClCompile Include="src\material\Material.cpp" />
     <ClCompile Include="src\mesh\Cube.cpp" />
+    <ClCompile Include="src\mesh\Mesh.cpp" />
+    <ClCompile Include="src\mesh\Model.cpp" />
     <ClCompile Include="src\mesh\Primitive.cpp" />
     <ClCompile Include="src\mesh\Sphere.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\textures\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
     <None Include="shaders\lighting.frag" />
     <None Include="shaders\lighting.vert" />
+    <None Include="shaders\single lighting\directionallight.frag" />
+    <None Include="shaders\single lighting\pointlight.frag" />
+    <None Include="shaders\single lighting\spotlight.frag" />
+    <None Include="shaders\test.frag" />
+    <None Include="shaders\test.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
-    <ClInclude Include="include\mesh\Primitive.h" />
+    <ClInclude Include="include\core\AssimpLoader.h" />
+    <ClInclude Include="include\core\Camera.h" />
+    <ClInclude Include="include\core\LightManager.h" />
+    <ClInclude Include="include\core\MaterialManager.h" />
+    <ClInclude Include="include\core\ObjectManager.h" />
+    <ClInclude Include="include\core\ShaderManager.h" />
+    <ClInclude Include="include\core\TextureManager.h" />
+    <ClInclude Include="include\lighting\DirectionalLight.h" />
+    <ClInclude Include="include\lighting\Light.h" />
+    <ClInclude Include="include\lighting\PointLight.h" />
+    <ClInclude Include="include\lighting\SpotLight.h" />
+    <ClInclude Include="include\material\Base.h" />
+    <ClInclude Include="include\material\Material.h" />
     <ClInclude Include="include\mesh\Cube.h" />
+    <ClInclude Include="include\mesh\Mesh.h" />
+    <ClInclude Include="include\mesh\Model.h" />
+    <ClInclude Include="include\mesh\Object.h" />
+    <ClInclude Include="include\mesh\Primitive.h" />
     <ClInclude Include="include\mesh\Sphere.h" />
     <ClInclude Include="include\shaders\Shader.h" />
-    <ClInclude Include="include\textures\Texture.h" />
+    <ClInclude Include="include\Structures.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -102,16 +135,28 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\canty\source\repos\OpenGLRendererApplication\Project\include;C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\canty\source\repos\OpenGLRendererApplication\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Project\include;$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,11 +164,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,12 +180,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -148,11 +196,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,12 +212,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
