@@ -13,7 +13,7 @@
 class Primitive : public Object
 {
 public:
-	Primitive(int ID);
+	Primitive();
 
 	virtual void generateMesh() = 0; // Pure Virtual
 

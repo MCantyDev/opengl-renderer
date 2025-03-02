@@ -144,6 +144,9 @@
     <ClCompile Include="src\core\ShaderManager.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\ModelManager.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -245,6 +248,9 @@
       <Filter>Header Files\object\primitive</Filter>
     </ClInclude>
     <ClInclude Include="include\core\ShaderManager.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\ModelManager.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>

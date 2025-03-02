@@ -36,6 +36,7 @@ void ObjectManager::addObject(std::shared_ptr<Object> object, ObjectType type)
 	std::string typeName;
 	if (type == BASE_OBJECT)
 	{
+		object->id = baseObjectCounter;
 		objectMap[type][baseObjectCounter++] = object;
 		typeName = "Base Object";
 		
@@ -43,6 +44,7 @@ void ObjectManager::addObject(std::shared_ptr<Object> object, ObjectType type)
 
 	if (type == LIGHT_SOURCE)
 	{
+		object->id = lightSourceCounter;
 		objectMap[type][lightSourceCounter++] = object;
 		typeName = "Light Source";
 	}

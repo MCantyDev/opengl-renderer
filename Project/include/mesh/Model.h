@@ -12,10 +12,11 @@
 class Model : public Object
 {
 public:
-	Model(int ID, std::vector<Mesh> m);
+	Model(std::vector<Mesh> m);
+	Model(const Model& other);
 
 	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) override;
-
+	std::shared_ptr<Model> clone() const;
 private:
 	std::vector<Mesh> meshes;
 };

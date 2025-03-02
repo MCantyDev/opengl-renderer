@@ -26,6 +26,7 @@
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\LightManager.cpp" />
     <ClCompile Include="src\core\MaterialManager.cpp" />
+    <ClCompile Include="src\core\ModelManager.cpp" />
     <ClCompile Include="src\core\ObjectManager.cpp" />
     <ClCompile Include="src\core\ShaderManager.cpp" />
     <ClCompile Include="src\core\TextureManager.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="include\core\Camera.h" />
     <ClInclude Include="include\core\LightManager.h" />
     <ClInclude Include="include\core\MaterialManager.h" />
+    <ClInclude Include="include\core\ModelManager.h" />
     <ClInclude Include="include\core\ObjectManager.h" />
     <ClInclude Include="include\core\ShaderManager.h" />
     <ClInclude Include="include\core\TextureManager.h" />

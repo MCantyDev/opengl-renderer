@@ -7,11 +7,10 @@
 
 #include "core/Camera.h"
 #include "core/ObjectManager.h"
-#include "core/TextureManager.h"
 #include "core/MaterialManager.h"
 #include "core/LightManager.h"
 #include "core/ShaderManager.h"
-#include "core/AssimpLoader.h"
+#include "core/ModelManager.h"
 
 // Meshes
 #include "mesh/Cube.h"
@@ -98,15 +97,16 @@ int main()
 
 	// Setup Singleton Instances
 	Camera* camera = Camera::GetInstance();
-	TextureManager* textureManager = TextureManager::GetInstance();
 	MaterialManager* materialManager = MaterialManager::GetInstance();
 	LightManager* lightManager = LightManager::GetInstance();
-	ObjectManager* objectManager = ObjectManager::GetInstance();
 	ShaderManager* shaderManager = ShaderManager::GetInstance();
+	ModelManager* modelManager = ModelManager::GetInstance();
+
+	// Want to Change Objects so they 
+	ObjectManager* objectManager = ObjectManager::GetInstance();
 
 	
 	// Initialise
-	AssimpLoader assimpLoader;
 	// Setup the Shaders, both the Vertex and Fragment ones
 	shaderManager->addShader("default", std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag"));
 	shaderManager->addShader("lighting", std::make_shared<Shader>("shaders/lighting.vert", "shaders/lighting.frag"));
@@ -127,8 +127,10 @@ int main()
 		glm::vec3(0.3f, 0.3f, 0.3f),
 		1.0f, 0.09f, 0.032f
 	), POINT_LIGHT);
-	objectManager->addObject(std::make_shared<Model>(0, assimpLoader.load("models/Robot/robo.obj")), BASE_OBJECT);
-	objectManager->addObject(std::make_shared<Model>(1, assimpLoader.load("models/Backpack/backpack.obj", true)), BASE_OBJECT);
+	modelManager->addModel("robot", "models/Robot/robo.obj");
+	modelManager->addModel("backpack", "models/Backpack/backpack.obj", true);
+	objectManager->addObject(modelManager->getModel("robot"), BASE_OBJECT);
+	objectManager->addObject(modelManager->getModel("backpack"), BASE_OBJECT);
 
 	glEnable(GL_DEPTH_TEST);
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
@@ -169,10 +171,9 @@ int main()
 		shaderManager->setupLighting("default");
 
 		std::shared_ptr<Object> object = objectManager->getObject(0, BASE_OBJECT);
-		std::shared_ptr<Model> robot = std::dynamic_pointer_cast<Model>(object);
-		robot->setScale(glm::vec3(0.5f));
-		robot->setPosition(glm::vec3(3.0f));
-
+		object->setScale(glm::vec3(0.5f));
+		object->setPosition(glm::vec3(1.0f));
+		
 		objectManager->renderObjects(shaderManager->getShader("default"), shaderManager->getShader("lighting"));
 
 		// Swap the buffers and Poll+Call events
@@ -181,10 +182,13 @@ int main()
 	}
 
 	camera->DestroyInstance();
-	textureManager->DestroyInstance();
 	materialManager->DestroyInstance();
 	lightManager->DestroyInstance();
+	shaderManager->DestroyInstance();
+	modelManager->DestroyInstance();
+
 	objectManager->DestroyInstance();
+
 	glfwDestroyWindow(window);
 	glfwTerminate(); 
 

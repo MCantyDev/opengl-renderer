@@ -60,7 +60,7 @@ For example a (1.0f, 50, 50) sphere would have 2601 vertices (Formula is (sector
 class Sphere : public Primitive
 {
 public:
-	Sphere(int ID, float r, int vd, int hd);
+	Sphere(float r, int vd, int hd);
 	virtual void generateMesh() override;
 private:
 

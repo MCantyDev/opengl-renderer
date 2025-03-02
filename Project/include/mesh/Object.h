@@ -10,8 +10,8 @@
 class Object
 {
 public:
-	Object(int ID)
-		: ID(ID), modelMatrix(glm::mat4(1.0f)), position(glm::vec3(0.0f)), 
+	Object()
+		: modelMatrix(glm::mat4(1.0f)), position(glm::vec3(0.0f)), 
 		scale(glm::vec3(1.0f)), rotation(0.0f), axis(glm::vec3(1.0f)) {};
 
 	virtual ~Object() = default;
@@ -34,8 +34,9 @@ public:
 		scale = s;
 	}
 
+	int id = -1; // To be Set by ObjectManager when added to ObjectMap
+
 protected:
-	int ID;
 	glm::mat4 modelMatrix;
 	glm::vec3 position, scale, axis;
 	float rotation;

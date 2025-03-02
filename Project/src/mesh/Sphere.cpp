@@ -1,7 +1,7 @@
 #include "mesh/Sphere.h"
 
-Sphere::Sphere(int ID, float r, int vd, int hd)
-	: Primitive(ID), radius(r), verticalDivisions(vd), horizonalDivisions(hd)
+Sphere::Sphere(float r, int vd, int hd)
+	: Primitive(), radius(r), verticalDivisions(vd), horizonalDivisions(hd)
 {
 	generateMesh();
 }

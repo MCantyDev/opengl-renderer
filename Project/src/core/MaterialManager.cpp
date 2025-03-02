@@ -10,6 +10,7 @@ MaterialManager::MaterialManager()
 
 MaterialManager::~MaterialManager()
 {
+	textureManager->DestroyInstance();
 	std::cout << "Closing: Material Manager destroyed" << std::endl;
 }
 

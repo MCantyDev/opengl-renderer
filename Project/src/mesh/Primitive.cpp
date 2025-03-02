@@ -1,7 +1,7 @@
 #include "mesh/Primitive.h"
 
-Primitive::Primitive(int ID)
-	: Object(ID)
+Primitive::Primitive()
+	: Object()
 {
 }
 
