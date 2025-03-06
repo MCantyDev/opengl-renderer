@@ -10,13 +10,6 @@
 #include <memory>
 #include <variant>
 
-enum LightType
-{
-	DIRECTIONAL_LIGHT,
-	POINT_LIGHT,
-	SPOT_LIGHT
-}; 
-
 class LightManager
 {
 public:

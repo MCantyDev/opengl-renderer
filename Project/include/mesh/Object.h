@@ -7,6 +7,12 @@
 
 #include "shaders/Shader.h"
 
+struct Rotation
+{
+	float rotation;
+	glm::vec3 axis;
+};
+
 class Object
 {
 public:
@@ -17,6 +23,7 @@ public:
 	virtual ~Object() = default;
 
 	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) = 0;
+	virtual void setMaterial(std::string materialName) = 0;
 
 	void setPosition(glm::vec3 p) 
 	{ 

@@ -18,6 +18,7 @@ public:
 	virtual void generateMesh() = 0; // Pure Virtual
 
 	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) override;
+	virtual void setMaterial(std::string materialName);
 
 protected:
 	Mesh mesh;

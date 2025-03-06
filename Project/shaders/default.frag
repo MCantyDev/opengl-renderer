@@ -88,7 +88,7 @@ uniform int numSpotLights;
 uniform bool useTexture; 
 uniform Material material; // Material
 
-vec3 calcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
+vec3 calcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir, vec2 textureCoords)
 {
 	vec3 ambient;
 	vec3 diffuse;
@@ -116,10 +116,10 @@ vec3 calcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 		specular = light.specular * spec * material.base.specular;
 	}
 
-	return (ambient + diffuse + specular) ;
+	return (ambient + diffuse + specular);
 }
 
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 textureCoords)
 {
 	vec3 ambient;
 	vec3 diffuse;
@@ -150,7 +150,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	return ambient + attenuation * (diffuse + specular);
 }
 
-vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 textureCoords)
 {
     vec3 ambient = vec3(0.0);
     vec3 diffuse = vec3(0.0);
@@ -211,17 +211,17 @@ void main()
 
 	for (int i = 0; i < numDirLights; i++)
 	{
-		result += calcDirectionalLight(dirLights[i], norm, viewDir);
+		result += calcDirectionalLight(dirLights[i], norm, viewDir, textureCoords);
 	}
 
 	for (int i = 0; i < numPointLights; i++)
 	{
-		result += calcPointLight(pointLights[i], norm, fragPos, viewDir);
+		result += calcPointLight(pointLights[i], norm, fragPos, viewDir, textureCoords);
 	}
 
 	for (int i = 0; i < numSpotLights; i++)
 	{
-		result += calcSpotLight(spotLights[i], norm, fragPos, viewDir);
+		result += calcSpotLight(spotLights[i], norm, fragPos, viewDir, textureCoords);
 	}
 
 	if (useTexture)

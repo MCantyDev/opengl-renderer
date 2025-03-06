@@ -1,18 +1,8 @@
 ﻿// Standard Lib Imports
-#include <random>
 #include <vector>
 
 // Custom Components
-#include "shaders/Shader.h"
-
-#include "core/Camera.h"
-#include "core/ObjectManager.h"
-#include "core/MaterialManager.h"
-#include "core/LightManager.h"
-#include "core/ShaderManager.h"
-#include "core/ModelManager.h"
-
-#include "mesh/Cube.h"
+#include "core/SceneManager.h"
 
 /*
 * Purpose - Callback Function when the Window has been resized with cursor. 
@@ -32,6 +22,11 @@ void processInput(GLFWwindow* window);
 int GLFW_MAJOR = 4;
 int GLFW_MINOR = 6;
 const char* WINDOW_NAME = "OpenGL Renderer Application";
+
+// Windowing
+// ------------
+int width = 1200;
+int height = 800;
 
 // Timing
 // ------------
@@ -62,24 +57,20 @@ int main()
 	std::cout << "Setup: GLFW_OPENGL_PROFILE: Core Profile Selected" << std::endl;
 
 	// Create a GLFWwindow pointer, with the glfwCreateWindow function
-	GLFWwindow* window = glfwCreateWindow(800, 600, WINDOW_NAME, nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(width, height, WINDOW_NAME, nullptr, nullptr);
 	if (window == nullptr) // Check if Window was successfully created
 	{
 		std::cout << "Error: Failed to Create Window" << std::endl;
 		glfwTerminate(); // Clean up glfw
 		return -1;
 	}
-	
-	int width = 800;
-	int height = 600;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\" window has been created" <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Width set as " << width <<  std::endl;
 	std::cout << "Setup: \"" << WINDOW_NAME << "\": Height set as " << height << std::endl;
 
 	glfwMakeContextCurrent(window); // Make the created window the current context...very useful for next line
-	glfwSwapInterval(0); // Deactivate V-SYNC
+	glfwSwapInterval(0); // V-SYNC - 0 for Off, 1 for On
 	std::cout << "Setup: V-Sync Deactivated" << std::endl;
-	
 
 	// After making Window current context we can Load GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
@@ -92,46 +83,12 @@ int main()
 	glViewport(0, 0, width, height); // Set the default viewport
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set the frambuffer size callback function to framebuffer_size_callback 
 
-	// Setup Singleton Instances
-	Camera* camera = Camera::GetInstance();
-	MaterialManager* materialManager = MaterialManager::GetInstance();
-	LightManager* lightManager = LightManager::GetInstance();
-	ShaderManager* shaderManager = ShaderManager::GetInstance();
-	ModelManager* modelManager = ModelManager::GetInstance();
-
-	// Want to Change Objects so they 
-	ObjectManager* objectManager = ObjectManager::GetInstance();
-
-	
-	// Initialise
-	// Setup the Shaders, both the Vertex and Fragment ones
-	shaderManager->addShader("default", std::make_shared<Shader>("shaders/default.vert", "shaders/default.frag"));
-	shaderManager->addShader("lighting", std::make_shared<Shader>("shaders/lighting.vert", "shaders/lighting.frag"));
-	camera->initialiseCamera(window, glm::vec3(0.0f, 0.0f, 3.0f));
-	materialManager->addMaterial("default", Material(Base(glm::vec3(0.3f), glm::vec3(1.0f), glm::vec3(0.5f)), 32.0f));
-	lightManager->addLight(std::make_shared<DirectionalLight>
-	(
-		glm::vec3(-0.2f, -1.0f, -0.3f),
-		glm::vec3(0.0f),
-		glm::vec3(0.3f, 0.3f, 0.3f),
-		glm::vec3(0.06f, 0.06f, 0.06f)
-	), DIRECTIONAL_LIGHT);
-	lightManager->addLight(std::make_shared<PointLight>
-	(
-		glm::vec3(0.0f, 2.0f, 1.0f),
-		glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(0.3f, 0.3f, 0.3f),
-		1.0f, 0.09f, 0.032f, std::make_shared<Cube>()
-	), POINT_LIGHT);
-	modelManager->addModel("robot", "models/Robot/robo.obj");
-	modelManager->addModel("backpack", "models/Backpack/backpack.obj", true);
-	objectManager->addObject(modelManager->getModel("robot"));
-	// objectManager->addObject(modelManager->getModel("backpack"));
+	std::unique_ptr<SceneManager> sceneManager = std::make_unique<SceneManager>();
+	sceneManager->initialiseSystems(window);
+	sceneManager->addObject("robot", "models/Robot/robo.obj");
 
 	glEnable(GL_DEPTH_TEST);
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
-
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -154,43 +111,22 @@ int main()
 
 		// Process input
 		processInput(window);
-		camera->processKeyboardMovement(deltaTime);
+		sceneManager->cameraMovement(deltaTime);
 
 		// Render stuff here
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 projection = glm::perspective(glm::radians(camera->getFov()), (float)(width / height), 0.1f, 100.0f);
-		glm::mat4 view = camera->getView();
-
-		shaderManager->setupShaderMatrices("default", projection, view);
-		shaderManager->setupShaderMatrices("lighting", projection, view);
-
-		shaderManager->setupShaderUniforms("default", { {"viewPos", camera->getPos()} });
-		shaderManager->setupLighting("default");
-
-		std::shared_ptr<Object> object = objectManager->getObject(0);
-		object->setScale(glm::vec3(0.5f));
-		object->setPosition(glm::vec3(1.0f));
-
-		std::shared_ptr<PointLight> pointLight = lightManager->getPointLight(0);
-		pointLight->mesh->setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
-		pointLight->mesh->setRotation(glfwGetTime() * 35.0f, glm::vec3(1.0f, 2.0f, 0.0f));
-
-		objectManager->renderObjects(shaderManager->getShader("default"), shaderManager->getShader("lighting"));
+		sceneManager->setCurrentShaderNames("default", "lighting");
+		sceneManager->editObject(0, { {"scale", glm::vec3(0.2f)}, {"position", glm::vec3(0.0f)}, {"rotation", Rotation(45.0f, glm::vec3(0.0f, 1.0f, 0.0f))}, {"material", "RoboMaterial"} });
+		
+		sceneManager->update(width, height);
+		sceneManager->render();
 
 		// Swap the buffers and Poll+Call events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	camera->DestroyInstance();
-	materialManager->DestroyInstance();
-	lightManager->DestroyInstance();
-	shaderManager->DestroyInstance();
-	modelManager->DestroyInstance();
-
-	objectManager->DestroyInstance();
 
 	glfwDestroyWindow(window);
 	glfwTerminate(); 

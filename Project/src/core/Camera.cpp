@@ -183,8 +183,8 @@ void Camera::processMouseMovement(double xp, double yp)
 	yaw += xOffset;
 
 	// Clamping the yaw between 0 and 360 as 360 is a full turn so 360 would be the same as 0
-	if (yaw > 360.0f) yaw -= 360.0f;
-	if (yaw < 0.0f) yaw += 360.0f;
+	if (yaw > 180.0f) yaw -= 360.0f;
+	if (yaw < -180.0f) yaw += 360.0f;
 
 	// Clamping the pitch between -89 and 89 - Makes a flip not possible
 	if (pitch > 89.0f) pitch = 89.0f;

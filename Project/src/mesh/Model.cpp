@@ -22,6 +22,17 @@ void Model::draw(std::shared_ptr<Shader> s, ShaderType t)
 	}
 }
 
+void Model::setMaterial(std::string materialName)
+{
+	if (materialName == currentMaterial) return;
+
+	for (auto& mesh : meshes)
+	{
+		mesh.materialName = materialName;
+	}
+	currentMaterial = materialName;
+}
+
 std::shared_ptr<Model> Model::clone() const
 {
 	return std::make_shared<Model>(*this);

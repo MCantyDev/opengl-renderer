@@ -146,6 +146,6 @@ std::string AssimpLoader::processTexturesIntoMaterial(aiMaterial* mat)
 	}
 
 	// Create new material and store it in the MaterialManager
-	materialManager->addMaterial(materialName.c_str(), Material(diffuseTexture, specularTexture, emissionTexture, 32.0f));
+	materialManager->addMaterial(materialName.c_str(), std::make_shared<Material>(diffuseTexture, specularTexture, emissionTexture, 32.0f));
 	return materialName;
 }
