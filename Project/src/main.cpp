@@ -12,10 +12,7 @@
 #include "core/ShaderManager.h"
 #include "core/ModelManager.h"
 
-// Meshes
 #include "mesh/Cube.h"
-#include "mesh/Sphere.h"
-#include "mesh/Model.h"
 
 /*
 * Purpose - Callback Function when the Window has been resized with cursor. 
@@ -125,15 +122,17 @@ int main()
 		glm::vec3(0.1f, 0.1f, 0.1f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(0.3f, 0.3f, 0.3f),
-		1.0f, 0.09f, 0.032f
+		1.0f, 0.09f, 0.032f, std::make_shared<Cube>()
 	), POINT_LIGHT);
 	modelManager->addModel("robot", "models/Robot/robo.obj");
 	modelManager->addModel("backpack", "models/Backpack/backpack.obj", true);
-	objectManager->addObject(modelManager->getModel("robot"), BASE_OBJECT);
-	objectManager->addObject(modelManager->getModel("backpack"), BASE_OBJECT);
+	objectManager->addObject(modelManager->getModel("robot"));
+	// objectManager->addObject(modelManager->getModel("backpack"));
 
 	glEnable(GL_DEPTH_TEST);
 	std::cout << "Setup: Initialisation of Application complete\nSetup: Proceeding to Run" << std::endl;
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// Show FPS in title
@@ -170,10 +169,14 @@ int main()
 		shaderManager->setupShaderUniforms("default", { {"viewPos", camera->getPos()} });
 		shaderManager->setupLighting("default");
 
-		std::shared_ptr<Object> object = objectManager->getObject(0, BASE_OBJECT);
+		std::shared_ptr<Object> object = objectManager->getObject(0);
 		object->setScale(glm::vec3(0.5f));
 		object->setPosition(glm::vec3(1.0f));
-		
+
+		std::shared_ptr<PointLight> pointLight = lightManager->getPointLight(0);
+		pointLight->mesh->setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+		pointLight->mesh->setRotation(glfwGetTime() * 35.0f, glm::vec3(1.0f, 2.0f, 0.0f));
+
 		objectManager->renderObjects(shaderManager->getShader("default"), shaderManager->getShader("lighting"));
 
 		// Swap the buffers and Poll+Call events

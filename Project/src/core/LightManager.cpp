@@ -31,7 +31,7 @@ void LightManager::DestroyInstance()
 	}
 }
 
-void LightManager::addLight(LightVariant light, LightType lightType)
+void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
 {
 	if (lightType == DIRECTIONAL_LIGHT)
 	{
@@ -93,7 +93,8 @@ std::shared_ptr<DirectionalLight> LightManager::getDirectionalLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<DirectionalLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<DirectionalLight>(light);
 	}
 	return nullptr;
 }
@@ -105,7 +106,8 @@ std::shared_ptr<PointLight> LightManager::getPointLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<PointLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<PointLight>(light);
 	}
 	return nullptr;
 }
@@ -117,7 +119,8 @@ std::shared_ptr<SpotLight> LightManager::getSpotLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<SpotLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<SpotLight>(light);
 	}
 	return nullptr;
 }
@@ -133,6 +136,29 @@ int LightManager::getMapSize(LightType lightType)
 		return innerMap.size();
 	}
 	return 0;
+}
+
+std::vector<std::shared_ptr<Object>> LightManager::getLightMeshes()
+{
+	std::vector<std::shared_ptr<Object>> meshes;
+
+	for (const auto& light : lightMap[POINT_LIGHT])
+	{
+		if (light.second->mesh)
+		{
+			meshes.push_back(light.second->mesh);
+		}
+	}
+
+	for (const auto& light : lightMap[SPOT_LIGHT])
+	{
+		if (light.second->mesh)
+		{
+			meshes.push_back(light.second->mesh);
+		}
+	}
+
+	return meshes;
 }
 
 std::string LightManager::getLightTypeName(LightType type)
