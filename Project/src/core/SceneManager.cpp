@@ -3,7 +3,7 @@
 SceneManager::SceneManager()
 	: camera(Camera::GetInstance()), objectManager(ObjectManager::GetInstance()), materialManager(MaterialManager::GetInstance()), 
 	lightManager(LightManager::GetInstance()), shaderManager(ShaderManager::GetInstance()), modelManager(ModelManager::GetInstance()),
-	mainShader(""), lightShader("")
+	mainShader("default"), lightShader("lighting")
 {
 	std::cout << "Setup: Scene Manager created" << std::endl;
 }
@@ -70,30 +70,10 @@ void SceneManager::addObject(std::string name, std::string filePath, bool flippe
 	modelManager->addModel(name, filePath, flippedTexture);
 	objectManager->addObject(modelManager->getModel(name));
 }
-
 void SceneManager::editObject(int ID, std::unordered_map<std::string, EditableObject> map)
 {
-	std::shared_ptr<Object> object = objectManager->getObject(ID);
-
-	for (const auto& [name, value] : map)
-	{
-		std::visit([&](auto&& v) {
-			using T = std::decay_t<decltype(v)>;
-
-			if constexpr (std::is_same_v<T, glm::vec3>) {
-				if (name == "position") object->setPosition(v);
-				if (name == "scale") object->setScale(v);
-			}
-
-			if constexpr (std::is_same_v<T, Rotation>)
-				object->setRotation(v.rotation, v.axis);
-
-			if constexpr (std::is_same_v<T, std::string>)
-				object->setMaterial(v);
-			}, value);
-	};
+	objectManager->editObject(ID, map);
 }
-
 void SceneManager::deleteObject(int ID)
 {
 	objectManager->deleteObject(ID);
@@ -103,7 +83,6 @@ void SceneManager::addMaterial(std::string materialName, std::shared_ptr<Materia
 {
 	materialManager->addMaterial(materialName.c_str(), material);
 }
-
 void SceneManager::deleteMaterial(std::string materialName)
 {
 	materialManager->deleteMaterial(materialName.c_str());
@@ -115,9 +94,8 @@ void SceneManager::addLight(std::shared_ptr<Light> light, LightType type)
 }
 void SceneManager::editLight(int ID, LightType type, std::unordered_map<std::string, EditableLight> map)
 {
-
+	lightManager->editLight(0, type, map);
 }
-
 void SceneManager::deleteLight(int ID, LightType type)
 {
 	lightManager->deleteLight(ID, type);
@@ -138,3 +116,4 @@ void SceneManager::render()
 {
 	objectManager->renderObjects(shaderManager->getShader(mainShader), shaderManager->getShader(lightShader));
 }
+

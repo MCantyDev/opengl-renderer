@@ -72,3 +72,26 @@ void ObjectManager::renderObjects(std::shared_ptr<Shader> s, std::shared_ptr<Sha
 		mesh->draw(ls, SHADER_LIGHTING);
 	}
 }
+
+void ObjectManager::editObject(int id, std::unordered_map<std::string, EditableObject> map)
+{
+	std::shared_ptr<Object> object = getObject(id);
+
+	for (const auto& [name, value] : map)
+	{
+		std::visit([&](auto&& v) {
+			using T = std::decay_t<decltype(v)>;
+
+			if constexpr (std::is_same_v<T, glm::vec3>) {
+				if (name == "position") object->setPosition(v);
+				if (name == "scale") object->setScale(v);
+			}
+
+			if constexpr (std::is_same_v<T, Rotation>)
+				object->setRotation(v.rotation, v.axis);
+
+			if constexpr (std::is_same_v<T, std::string>)
+				object->setMaterial(v);
+			}, value);
+	};
+}

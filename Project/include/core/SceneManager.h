@@ -10,12 +10,6 @@
 
 #include <unordered_map>
 
-using EditableObject = std::variant<
-	glm::vec3, Rotation, std::string>;
-
-using EditableLight = std::variant<
-	glm::vec3, float, std::shared_ptr<Object>>;
-
 /* 
 	@Class Scene Manager
 	@brief Scene Manager is the Class in which the core systems are called from. Scene Manager is used to interface with the whole application backend

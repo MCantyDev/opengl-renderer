@@ -10,6 +10,9 @@
 #include <memory>
 #include <variant>
 
+using EditableLight = std::variant<
+	glm::vec3, float, std::shared_ptr<Object>>;
+
 class LightManager
 {
 public:
@@ -19,8 +22,10 @@ public:
 	~LightManager();
 
 	void addLight(std::shared_ptr<Light> light, LightType lightType);
+	void editLight(int id, LightType type, std::unordered_map<std::string, EditableLight> map);
 	void deleteLight(int id, LightType lightType);
 
+	std::shared_ptr<Light> getLight(int id, LightType type);
 	std::shared_ptr<DirectionalLight> getDirectionalLight(int id);
 	std::shared_ptr<PointLight> getPointLight(int id);
 	std::shared_ptr<SpotLight> getSpotLight(int id);

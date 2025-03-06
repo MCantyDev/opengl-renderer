@@ -117,8 +117,8 @@ int main()
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		sceneManager->setCurrentShaderNames("default", "lighting");
-		sceneManager->editObject(0, { {"scale", glm::vec3(0.2f)}, {"position", glm::vec3(0.0f)}, {"rotation", Rotation(45.0f, glm::vec3(0.0f, 1.0f, 0.0f))}, {"material", "RoboMaterial"} });
+		sceneManager->editObject(0, { {"scale", glm::vec3(0.2f)}, {"position", glm::vec3(0.0f)}, {"rotation", Rotation(-45.0f, glm::vec3(0.0f, 1.0f, 0.0f))}, {"material", "RoboMaterial"} });
+		sceneManager->editLight(0, DIRECTIONAL_LIGHT, { {"ambient", glm::vec3(0.0f)}, {"diffuse", glm::vec3(1.0f, 1.0f, 1.0f)} });
 		
 		sceneManager->update(width, height);
 		sceneManager->render();

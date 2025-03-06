@@ -1,14 +1,18 @@
 #ifndef OBJECTMANAGER_H
 #define OBJECTMANAGER_H
 
+#include "glad/glad.h"
 #include "core/LightManager.h"
 #include "mesh/Object.h"
-#include "glad/glad.h"
 
 
 #include <iostream>
 #include <unordered_map>
 #include <memory>
+#include <variant>
+
+using EditableObject = std::variant<
+	glm::vec3, Rotation, std::string>;
 
 class ObjectManager
 {
@@ -19,6 +23,7 @@ public:
 	~ObjectManager();
 
 	void addObject(std::shared_ptr<Object> object);
+	void editObject(int id, std::unordered_map<std::string, EditableObject> map);
 	void deleteObject(int ID);
 
 	std::shared_ptr<Object> getObject(int ID);
