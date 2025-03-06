@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
@@ -59,6 +60,7 @@
     <None Include="shaders\test.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />

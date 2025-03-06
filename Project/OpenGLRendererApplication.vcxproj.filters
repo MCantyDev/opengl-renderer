@@ -150,6 +150,9 @@
     <ClCompile Include="src\mesh\Model.cpp">
       <Filter>Source Files\object</Filter>
     </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -258,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="include\core\SceneManager.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Application.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
