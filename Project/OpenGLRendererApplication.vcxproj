@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Buffers\EBO.cpp" />
     <ClCompile Include="src\Buffers\VAO.cpp" />
     <ClCompile Include="src\Buffers\VBO.cpp" />
@@ -26,7 +27,9 @@
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\LightManager.cpp" />
     <ClCompile Include="src\core\MaterialManager.cpp" />
+    <ClCompile Include="src\core\ModelManager.cpp" />
     <ClCompile Include="src\core\ObjectManager.cpp" />
+    <ClCompile Include="src\core\SceneManager.cpp" />
     <ClCompile Include="src\core\ShaderManager.cpp" />
     <ClCompile Include="src\core\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -57,6 +60,7 @@
     <None Include="shaders\test.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\buffers\EBO.h" />
     <ClInclude Include="include\buffers\VAO.h" />
     <ClInclude Include="include\buffers\VBO.h" />
@@ -64,7 +68,9 @@
     <ClInclude Include="include\core\Camera.h" />
     <ClInclude Include="include\core\LightManager.h" />
     <ClInclude Include="include\core\MaterialManager.h" />
+    <ClInclude Include="include\core\ModelManager.h" />
     <ClInclude Include="include\core\ObjectManager.h" />
+    <ClInclude Include="include\core\SceneManager.h" />
     <ClInclude Include="include\core\ShaderManager.h" />
     <ClInclude Include="include\core\TextureManager.h" />
     <ClInclude Include="include\lighting\DirectionalLight.h" />

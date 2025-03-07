@@ -10,6 +10,7 @@ MaterialManager::MaterialManager()
 
 MaterialManager::~MaterialManager()
 {
+	textureManager->DestroyInstance();
 	std::cout << "Closing: Material Manager destroyed" << std::endl;
 }
 
@@ -37,12 +38,12 @@ std::shared_ptr<Material> MaterialManager::getMaterial(const char* materialName)
 
 	if (it != materialMap.end())
 	{
-		return std::make_shared<Material>(it->second);
+		return it->second;
 	}
 	return nullptr;
 }
 
-void MaterialManager::addMaterial(const char* materialName, const Material& material)
+void MaterialManager::addMaterial(const char* materialName, std::shared_ptr<Material> material)
 {
 	materialMap[materialName] = material;
 	std::cout << "Functional: Adding Material to Material Manager - Name: \"" << materialName << "\"" << std::endl;
@@ -60,7 +61,7 @@ void MaterialManager::changeMaterialTexture(const char* materialName, const char
 
 	if (materialIt != materialMap.end())
 	{
-		Material* material = &materialIt->second;
+		std::shared_ptr<Material> material = materialIt->second;
 		GLuint textureID = textureManager->getTexture(textureName, textureType);
 
 		switch (textureType)

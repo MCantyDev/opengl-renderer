@@ -12,11 +12,15 @@
 class Model : public Object
 {
 public:
-	Model(int ID, std::vector<Mesh> m);
+	Model(std::vector<Mesh> m);
+	Model(const Model& other);
 
 	virtual void draw(std::shared_ptr<Shader> s, ShaderType t = SHADER_DEFAULT) override;
+	virtual void setMaterial(std::string materialName) override;
 
+	std::shared_ptr<Model> clone() const;
 private:
+	std::string currentMaterial; // Currently Meshes only realistically have a single Material anyways
 	std::vector<Mesh> meshes;
 };
 

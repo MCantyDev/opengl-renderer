@@ -129,12 +129,6 @@
     <ClCompile Include="src\core\AssimpLoader.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\Model.cpp">
-      <Filter>Source Files\object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\Primitive.cpp">
-      <Filter>Source Files\object\primitive</Filter>
-    </ClCompile>
     <ClCompile Include="src\mesh\Sphere.cpp">
       <Filter>Source Files\object\primitive</Filter>
     </ClCompile>
@@ -143,6 +137,21 @@
     </ClCompile>
     <ClCompile Include="src\core\ShaderManager.cpp">
       <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ModelManager.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\SceneManager.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Primitive.cpp">
+      <Filter>Source Files\object\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\Model.cpp">
+      <Filter>Source Files\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +255,15 @@
     </ClInclude>
     <ClInclude Include="include\core\ShaderManager.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\ModelManager.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\SceneManager.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Application.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

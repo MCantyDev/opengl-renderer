@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <iostream>
+#include <memory>
 
 #include "core/TextureManager.h"
 #include "material/Material.h"
@@ -18,7 +19,7 @@ public:
 
 	std::shared_ptr<Material> getMaterial(const char* materialName);
 
-	void addMaterial(const char* materialName, const Material& material);
+	void addMaterial(const char* materialName, std::shared_ptr<Material> material);
 	void deleteMaterial(const char* materialName);
 	void changeMaterialTexture(const char* materialName, const char* textureName, TextureType textureType);
 
@@ -28,7 +29,7 @@ private:
 	TextureManager* textureManager = TextureManager::GetInstance();
 
 	// Map of Materials
-	std::unordered_map<std::string, Material> materialMap;
+	std::unordered_map<std::string, std::shared_ptr<Material>> materialMap;
 
 	MaterialManager(const MaterialManager&) = delete;
 	MaterialManager& operator=(const MaterialManager&) = delete;

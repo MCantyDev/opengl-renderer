@@ -31,7 +31,7 @@ void LightManager::DestroyInstance()
 	}
 }
 
-void LightManager::addLight(LightVariant light, LightType lightType)
+void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
 {
 	if (lightType == DIRECTIONAL_LIGHT)
 	{
@@ -86,6 +86,18 @@ void LightManager::deleteLight(int lightID, LightType lightType)
 	}
 }
 
+std::shared_ptr<Light> LightManager::getLight(int id, LightType type)
+{
+	auto innerMap = lightMap[type];
+
+	auto it = innerMap.find(id);
+	if (it != innerMap.end())
+	{
+		return it->second;
+	}
+	return nullptr;
+}
+
 std::shared_ptr<DirectionalLight> LightManager::getDirectionalLight(int id)
 {
 	auto innerMap = lightMap[DIRECTIONAL_LIGHT];
@@ -93,7 +105,8 @@ std::shared_ptr<DirectionalLight> LightManager::getDirectionalLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<DirectionalLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<DirectionalLight>(light);
 	}
 	return nullptr;
 }
@@ -105,7 +118,8 @@ std::shared_ptr<PointLight> LightManager::getPointLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<PointLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<PointLight>(light);
 	}
 	return nullptr;
 }
@@ -117,7 +131,8 @@ std::shared_ptr<SpotLight> LightManager::getSpotLight(int id)
 	auto it = innerMap.find(id);
 	if (it != innerMap.end())
 	{
-		return std::get<std::shared_ptr<SpotLight>>(it->second);
+		auto light = it->second;
+		return std::static_pointer_cast<SpotLight>(light);
 	}
 	return nullptr;
 }
@@ -133,6 +148,121 @@ int LightManager::getMapSize(LightType lightType)
 		return innerMap.size();
 	}
 	return 0;
+}
+
+std::vector<std::shared_ptr<Object>> LightManager::getLightMeshes()
+{
+	std::vector<std::shared_ptr<Object>> meshes;
+
+	for (const auto& light : lightMap[POINT_LIGHT])
+	{
+		if (light.second->mesh)
+		{
+			meshes.push_back(light.second->mesh);
+		}
+	}
+
+	for (const auto& light : lightMap[SPOT_LIGHT])
+	{
+		if (light.second->mesh)
+		{
+			meshes.push_back(light.second->mesh);
+		}
+	}
+
+	return meshes;
+}
+
+void LightManager::editLight(int id, LightType type, std::unordered_map<std::string, EditableLight> map)
+{
+	std::shared_ptr<Light> light = getLight(id, type);
+	if (light == nullptr) return;
+
+	// Values which are accessible in just "light"
+	for (const auto& [name, value] : map)
+	{
+		std::visit([&](auto&& v) {
+			using T = std::decay_t<decltype(v)>;
+
+			if constexpr (std::is_same_v <T, glm::vec3>) {
+				if (name == "ambient") light->ambient = v;
+				if (name == "diffuse") light->diffuse = v;
+				if (name == "specular") light->specular = v;
+			}
+			if constexpr (std::is_same_v<T, std::shared_ptr<Object>>)
+				light->mesh = v;
+			}, value);
+	}
+
+	// Now we are going to use a switch statement and then do all the personalised options
+	switch (type)
+	{
+	case DIRECTIONAL_LIGHT:
+	{
+		auto dirLight = std::static_pointer_cast<DirectionalLight>(light);
+		for (const auto& [name, value] : map)
+		{
+			std::visit([&](auto&& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, glm::vec3>)
+				{
+					if (name == "direction") dirLight->direction = v;
+				}
+				}, value);
+		}
+		break;
+	}
+
+	case POINT_LIGHT:
+	{
+		auto pointLight = std::static_pointer_cast<PointLight>(light);
+		for (const auto& [name, value] : map)
+		{
+			std::visit([&](auto&& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, glm::vec3>)
+				{
+					if (name == "position") pointLight->position = v;
+				}
+				if constexpr (std::is_same_v<T, float>)
+				{
+					if (name == "constant") pointLight->constant = v;
+					if (name == "linear") pointLight->linear = v;
+					if (name == "quadratic") pointLight->quadratic = v;
+				}
+				}, value);
+		}
+		break;
+	}
+
+	case SPOT_LIGHT:
+	{
+		auto spotLight = std::static_pointer_cast<SpotLight>(light);
+		for (const auto& [name, value] : map)
+		{
+			std::visit([&](auto&& v) {
+				using T = std::decay_t<decltype(v)>;
+				if constexpr (std::is_same_v<T, glm::vec3>)
+				{
+					if (name == "direction") spotLight->direction = v;
+					if (name == "position") spotLight->position = v;
+				}
+				if constexpr (std::is_same_v<T, float>)
+				{
+					if (name == "constant") spotLight->constant = v;
+					if (name == "linear") spotLight->linear = v;
+					if (name == "quadratic") spotLight->quadratic = v;
+					if (name == "innerCutOff") spotLight->innerCutOff = v;
+					if (name == "outerCutOff") spotLight->outerCutOff = v;
+				}
+				}, value);
+		}
+		break;
+	}
+
+	default:
+		std::cout << "Functional Error: There is no light type with this value" << std::endl;
+	}
 }
 
 std::string LightManager::getLightTypeName(LightType type)
