@@ -22,6 +22,7 @@ public:
 	void addMaterial(const char* materialName, std::shared_ptr<Material> material);
 	void deleteMaterial(const char* materialName);
 	void changeMaterialTexture(const char* materialName, const char* textureName, TextureType textureType);
+	std::vector<const char*> getMaterials();
 
 private:
 	MaterialManager();

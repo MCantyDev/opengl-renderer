@@ -28,16 +28,27 @@ public:
 
 	void cameraMovement(float deltaTime);
 
-	void addObject(std::string name, std::string filePath = "", bool flippedTexture = false);
+	std::shared_ptr<Object> getObject(int ID);
+	std::vector<std::shared_ptr<Object>> getObjects();
+	void addObject(std::string name);
+	void addObject(std::shared_ptr<Object> object);
 	void editObject(int ID, std::unordered_map<std::string, EditableObject> map);
 	void deleteObject(int ID);
 
-	void addMaterial(std::string materialName, std::shared_ptr<Material> material);
-	void deleteMaterial(std::string materialName);
-
+	std::vector<std::shared_ptr<Light>> getLights();
 	void addLight(std::shared_ptr<Light> light, LightType type);
 	void editLight(int ID, LightType type, std::unordered_map<std::string, EditableLight> map);
 	void deleteLight(int ID, LightType type);
+
+	std::vector<const char*> getMaterialNames();
+	void addMaterial(std::string materialName, std::shared_ptr<Material> material);
+	void deleteMaterial(std::string materialName);
+
+	void addModel(std::string name, std::string filePath = "", bool flippedTexture = false);
+	void deleteModel(std::string name);
+	size_t getModelCount();
+	std::string getModelName(int index);
+	std::vector<std::string> getModelNames();
 
 	void update(int width, int height);
 	void render();

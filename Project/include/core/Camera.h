@@ -134,7 +134,7 @@ private:
 	float pitch = 0.0f;
 
 	bool firstMouse = true; // Make it so you can't click around and snap to a position
-	float speed = 2.5f; // Camera Speed
+	float speed = 1.0f; // Camera Speed
 
 	float fov = 45.0f; // Initial FOV
 	float sensitivity = 0.05f; // Initial Sensitivity

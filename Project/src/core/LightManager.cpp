@@ -40,6 +40,7 @@ void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
 			std::cout << "Functional Error: Failed to add Directional Light to Light Manager - " << lightMap[DIRECTIONAL_LIGHT].size() << "/" << directionalLimit << " Spots used" << std::endl;
 			return;
 		}
+		light->name = getLightTypeName(lightType) + std::to_string(nextDirectionalID);
 		lightMap[lightType][nextDirectionalID] = light;
 		std::cout << "Functional: Adding Directional Light to Light Manager - " << lightMap[DIRECTIONAL_LIGHT].size() << " / " << directionalLimit << " Spots used" << std::endl;
 		nextDirectionalID++;
@@ -52,6 +53,7 @@ void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
 			std::cout << "Functional Error: Failed to add Point Light to Light Manager - " << lightMap[POINT_LIGHT].size() << "/" << pointLimit << " Spots used" << std::endl;
 			return;
 		}
+		light->name = getLightTypeName(lightType) + std::to_string(nextPointID);
 		lightMap[lightType][nextPointID] = light;
 		std::cout << "Functional: Adding Point Light to Light Manager - " << lightMap[POINT_LIGHT].size() << " / " << pointLimit << " Spots used" << std::endl;
 		nextPointID++;
@@ -64,6 +66,7 @@ void LightManager::addLight(std::shared_ptr<Light> light, LightType lightType)
 			std::cout << "Functional Error: Failed to add Spot Light to Light Manager - " << lightMap[SPOT_LIGHT].size() << "/" << spotLimit << " Spots used" << std::endl;
 			return;
 		}
+		light->name = getLightTypeName(lightType) + std::to_string(nextSpotID);
 		lightMap[lightType][nextSpotID] = light;
 		std::cout << "Functional: Adding Spot Light to Light Manager - " << lightMap[SPOT_LIGHT].size() << " / " << spotLimit << " Spots used" << std::endl;
 		nextSpotID++;
@@ -169,8 +172,21 @@ std::vector<std::shared_ptr<Object>> LightManager::getLightMeshes()
 			meshes.push_back(light.second->mesh);
 		}
 	}
-
 	return meshes;
+}
+
+std::vector<std::shared_ptr<Light>> LightManager::getLights()
+{
+	std::vector<std::shared_ptr<Light>> lights;
+
+	for (auto& lightType : lightMap)
+	{
+		for (const auto& light : lightMap[lightType.first])
+		{
+			lights.push_back(light.second);
+		}
+	}
+	return lights;
 }
 
 void LightManager::editLight(int id, LightType type, std::unordered_map<std::string, EditableLight> map)
