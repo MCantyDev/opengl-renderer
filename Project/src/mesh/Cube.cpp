@@ -8,5 +8,5 @@ Cube::Cube()
 
 void Cube::generateMesh()
 {
-	mesh = Mesh(vertices, indices, "default");
+	mesh = Mesh(std::vector<Vertex>(vertices), std::vector<unsigned int>(indices), "default");
 }

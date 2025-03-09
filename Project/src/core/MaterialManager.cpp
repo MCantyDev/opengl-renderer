@@ -55,6 +55,17 @@ void MaterialManager::deleteMaterial(const char* materialName)
 	std::cout << "Functional: Removing Material from Material Manager - Name: \"" << materialName << "\"" << std::endl;
 }
 
+std::vector<const char*> MaterialManager::getMaterials()
+{
+	std::vector<const char*> materialNames;
+
+	for (auto& [key, val] : materialMap)
+	{
+		materialNames.push_back(key.c_str());
+	}
+	return materialNames;
+}
+
 void MaterialManager::changeMaterialTexture(const char* materialName, const char* textureName, TextureType textureType)
 {
 	auto materialIt = materialMap.find(materialName);

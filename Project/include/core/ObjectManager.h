@@ -5,6 +5,9 @@
 #include "core/LightManager.h"
 #include "mesh/Object.h"
 
+// Primitive Meshes
+#include "mesh/Cube.h"
+#include "mesh/Sphere.h"
 
 #include <iostream>
 #include <unordered_map>
@@ -23,13 +26,14 @@ public:
 	~ObjectManager();
 
 	void addObject(std::shared_ptr<Object> object);
-	void editObject(int id, std::unordered_map<std::string, EditableObject> map);
-	void deleteObject(int ID);
+	void editObject(int index, std::unordered_map<std::string, EditableObject> map);
+	void deleteObject(int index);
 
 	std::shared_ptr<Object> getObject(int ID);
+	std::vector<std::shared_ptr<Object>> getObjectsVector();
+	int getObjectCount();
 
 	void renderObjects(std::shared_ptr<Shader> s, std::shared_ptr<Shader> ls);
-
 private:
 	ObjectManager();
 	static ObjectManager* instance;
@@ -37,7 +41,7 @@ private:
 
 	int objectCounter;
 
-	std::unordered_map<int, std::shared_ptr<Object>> objectMap;
+	std::vector<std::shared_ptr<Object>> objectVector;
 
 	// Delete the Copy Constructor
 	ObjectManager(const ObjectManager&) = delete;

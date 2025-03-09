@@ -41,7 +41,25 @@ public:
 		scale = s;
 	}
 
+	glm::vec3 getPosition()
+	{
+		return position;
+	}
+	glm::vec3 getAxis()
+	{
+		return axis;
+	}
+	float getRotation()
+	{
+		return rotation;
+	}
+	glm::vec3 getScale()
+	{
+		return scale;
+	}
+
 	int id = -1; // To be Set by ObjectManager when added to ObjectMap
+	std::string name;
 
 protected:
 	glm::mat4 modelMatrix;

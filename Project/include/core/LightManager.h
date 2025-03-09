@@ -33,6 +33,7 @@ public:
 	int getMapSize(LightType lightType);
 
 	std::vector<std::shared_ptr<Object>> getLightMeshes();
+	std::vector<std::shared_ptr<Light>> getLights();
 
 private:
 	LightManager();

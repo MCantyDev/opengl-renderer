@@ -67,6 +67,9 @@
     <Filter Include="Header Files\object\primitive">
       <UniqueIdentifier>{c501e822-af6b-46eb-b9fe-cdcdd6c9df58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\dependencies">
+      <UniqueIdentifier>{82e81d35-c3bd-4540-a5c0-aa93c2651c13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -74,9 +77,6 @@
     </ClCompile>
     <ClCompile Include="src\shaders\Shader.cpp">
       <Filter>Source Files\shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glad.c">
-      <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Buffers\EBO.cpp">
       <Filter>Source Files\buffers</Filter>
@@ -152,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glad.c">
+      <Filter>Resource Files\dependencies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

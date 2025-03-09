@@ -5,8 +5,10 @@
 #include "core/AssimpLoader.h"
 
 #include <unordered_map>
+#include <vector>
 #include <string>
 #include <memory>
+#include <algorithm>
 #include <iostream>
 
 class ModelManager
@@ -22,12 +24,17 @@ public:
 
 	std::shared_ptr<Model> getModel(std::string name);
 
+	size_t getModelCount();
+	std::string getModelName(int index);
+	std::vector<std::string> getModelNames();
+
 private:
 	ModelManager();
 	static ModelManager* instance;
 
 	AssimpLoader assimpLoader;
 	std::unordered_map<std::string, std::shared_ptr<Model>> modelMap;
+	std::vector<std::string> modelNames;
 
 	ModelManager(const ModelManager&) = delete;
 	ModelManager& operator=(const ModelManager&) = delete;

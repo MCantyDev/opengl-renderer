@@ -147,10 +147,10 @@ void Camera::processKeyboardMovement(float dt)
 	// Shift = SPEED!
 	// If Shift is Pressed doubles speed, if not halfs it
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		speed = 5.0f;
+		speed = 2.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
-		speed = 2.5f;
+		speed = 1.0f;
 }
 
 // Processes

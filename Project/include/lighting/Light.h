@@ -2,7 +2,9 @@
 #define LIGHT_H
 
 #include "glm/glm.hpp"
+
 #include <memory>
+#include <string>
 
 // To stop the circular reference when including Object, Im using Forward Declaration.
 class Object;
@@ -28,6 +30,7 @@ public:
 
 	std::shared_ptr<Object> mesh;
 	LightType type;
+	std::string name;
 };
 
 #endif // LIGHT_H

@@ -34,35 +34,42 @@ void ObjectManager::DestroyInstance()
 void ObjectManager::addObject(std::shared_ptr<Object> object)
 {
 
-	object->id = objectCounter;
-	objectMap[objectCounter++] = object;
+	object->id = objectCounter++;
+	objectVector.push_back(object);
 	std::cout << "Functional: Added Object to Object Map" << std::endl;
 }
 
-void ObjectManager::deleteObject(int ID)
+void ObjectManager::deleteObject(int index)
 {
-	objectMap.erase(ID);
-	std::cout << "Functional: Deleted Object from Object Map - ID: " << ID << std::endl;
+	objectVector.erase(objectVector.begin() + index);
+	objectCounter--;
+	std::cout << "Functional: Deleted Object from Object Map - ID: " << index << std::endl;
 }
 
-std::shared_ptr<Object> ObjectManager::getObject(int ID)
+std::shared_ptr<Object> ObjectManager::getObject(int index)
 {
-	auto objectIt = objectMap.find(ID);
-	if (objectIt != objectMap.end())
-	{
-		return objectIt->second;
-	}
-	return nullptr;
+	if (index > objectVector.size())
+		return nullptr;
+
+	return objectVector[index];
+}
+
+std::vector<std::shared_ptr<Object>> ObjectManager::getObjectsVector()
+{
+	return objectVector;
+}
+
+int ObjectManager::getObjectCount()
+{
+	return objectCounter;
 }
 
 void ObjectManager::renderObjects(std::shared_ptr<Shader> s, std::shared_ptr<Shader> ls)
 {
-	std::unordered_map<int, std::shared_ptr<Object>> renderables;
-	
-	for (auto object : objectMap)
+	for (auto object : objectVector)
 	{
 		s->use();
-		object.second->draw(s);
+		object->draw(s, SHADER_DEFAULT);
 	}
 
 	std::vector<std::shared_ptr<Object>> lightMeshes = lightManager->getLightMeshes();
