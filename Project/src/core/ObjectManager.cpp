@@ -4,6 +4,7 @@
 ObjectManager* ObjectManager::instance = nullptr;
 
 ObjectManager::ObjectManager()
+	: objectCounter(0)
 {
 	std::cout << "Setup: Object Manager created" << std::endl;
 }

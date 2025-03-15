@@ -233,9 +233,9 @@ void Application::showSpawn(std::vector<std::string> modelNames)
 
 	if (ImGui::Button("Spawn"))
 	{
-		if (spawnNames[selectedSpawn] == "Cube")
+		if (std::string(spawnNames[selectedSpawn]) == "Cube")
 			sceneManager->addObject(std::make_shared<Cube>(*cube));
-		else if (spawnNames[selectedSpawn] == "Sphere")
+		else if (std::string(spawnNames[selectedSpawn]) == "Sphere")
 			sceneManager->addObject(std::make_shared<Sphere>(*sphere));
 		else
 			sceneManager->addObject(spawnNames[selectedSpawn]);
@@ -364,12 +364,12 @@ void Application::showItemProperties()
 			std::vector<const char*> meshes = { "Cube", "Sphere" };
 			if (ImGui::Combo("Mesh", &meshIndex, meshes.data(), meshes.size()))
 			{
-				if (meshes[meshIndex] == "Cube")
+				if (std::string(meshes[meshIndex]) == "Cube")
 				{
 					light->mesh = std::make_shared<Cube>(*cube);
 					light->mesh->setPosition(light->position);
 				}
-				if (meshes[meshIndex] == "Sphere")
+				if (std::string(meshes[meshIndex]) == "Sphere")
 				{
 					light->mesh = std::make_shared<Sphere>(*sphere);
 					light->mesh->setPosition(light->position);
